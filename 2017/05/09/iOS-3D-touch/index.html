@@ -12,8 +12,12 @@
 
 
 
+  <meta name="description" content="iOS 3D touch"/>
 
 
+
+
+  <meta name="keywords" content="iOS,Swift,3Dtouch," />
 
 
 
@@ -27,15 +31,25 @@
 
 
 
-<link rel="canonical" href="http://yoursite.com/"/>
+<link rel="canonical" href="http://yoursite.com/2017/05/09/iOS-3D-touch/"/>
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Phoenix">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="简单介绍一下iOS中的3Dtouch. 一般开发中主要有三种情境使用:icon的3Dtouch应用内的预览再就是可能游戏中会用到的按压力度的检测了 icon的3D touch第一种方式: 在info.plist中添加 效果如下   解释一下其中的一些key的意思:UIApplicationShortcutItemIconType 是使用系统提供的图标, 目前提供了近30种图标UIApplicat">
+<meta name="keywords" content="iOS,Swift,3Dtouch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 3D touch">
+<meta property="og:url" content="http://yoursite.com/2017/05/09/iOS-3D-touch/index.html">
 <meta property="og:site_name" content="Phoenix">
+<meta property="og:description" content="简单介绍一下iOS中的3Dtouch. 一般开发中主要有三种情境使用:icon的3Dtouch应用内的预览再就是可能游戏中会用到的按压力度的检测了 icon的3D touch第一种方式: 在info.plist中添加 效果如下   解释一下其中的一些key的意思:UIApplicationShortcutItemIconType 是使用系统提供的图标, 目前提供了近30种图标UIApplicat">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/3Dtouch_infoplist.png">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/3Dtoucheffect.jpg">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/3dtouchpeekpop.gif">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/3dtouchweigh.gif">
+<meta property="og:updated_time" content="2017-05-10T09:19:09.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Phoenix">
+<meta name="twitter:title" content="iOS 3D touch">
+<meta name="twitter:description" content="简单介绍一下iOS中的3Dtouch. 一般开发中主要有三种情境使用:icon的3Dtouch应用内的预览再就是可能游戏中会用到的按压力度的检测了 icon的3D touch第一种方式: 在info.plist中添加 效果如下   解释一下其中的一些key的意思:UIApplicationShortcutItemIconType 是使用系统提供的图标, 目前提供了近30种图标UIApplicat">
+<meta name="twitter:image" content="http://oph74zx6j.bkt.clouddn.com/3Dtouch_infoplist.png">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
@@ -62,7 +76,7 @@
 
 
 
-    <title> Phoenix </title>
+    <title> iOS 3D touch · Phoenix </title>
   </head>
 
   <body><div id="mobile-navbar" class="mobile-navbar">
@@ -146,14 +160,12 @@
         <div class="content-wrapper">
           <div id="content" class="content">
             
-  <section id="posts" class="posts">
-    
-      
+  
   <article class="post">
     <header class="post-header">
       <h1 class="post-title">
         
-          <a class="post-link" href="/2017/05/09/iOS-3D-touch/">iOS 3D touch</a>
+          iOS 3D touch
         
       </h1>
 
@@ -166,14 +178,17 @@
 
     
     
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#icon的3D-touch"><span class="toc-text">icon的3D touch</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#第一种方式-在info-plist中添加"><span class="toc-text">第一种方式: 在info.plist中添加</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用代码动态添加shortcutItem"><span class="toc-text">用代码动态添加shortcutItem</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#应用内预览"><span class="toc-text">应用内预览</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#peek-amp-pop"><span class="toc-text">peek & pop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#peek-quick-actions"><span class="toc-text">peek quick actions</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#按压力度监听"><span class="toc-text">按压力度监听</span></a></li></ol>
+    </div>
+  </div>
+
 
     <div class="post-content">
       
-        
-        
-
-        
-          <script src="/assets/js/DPlayer.min.js"> </script><p>简单介绍一下iOS中的3Dtouch. 一般开发中主要有三种情境使用:<br>icon的3Dtouch<br>应用内的预览<br>再就是可能游戏中会用到的按压力度的检测了</p>
+        <script src="/assets/js/DPlayer.min.js"> </script><p>简单介绍一下iOS中的3Dtouch. 一般开发中主要有三种情境使用:<br>icon的3Dtouch<br>应用内的预览<br>再就是可能游戏中会用到的按压力度的检测了</p>
 <h2 id="icon的3D-touch"><a href="#icon的3D-touch" class="headerlink" title="icon的3D touch"></a>icon的3D touch</h2><h3 id="第一种方式-在info-plist中添加"><a href="#第一种方式-在info-plist中添加" class="headerlink" title="第一种方式: 在info.plist中添加"></a>第一种方式: 在info.plist中添加</h3><p><img src="http://oph74zx6j.bkt.clouddn.com/3Dtouch_infoplist.png" alt="3Dtouch with info.plist"></p>
 <p>效果如下</p>
 <p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/3Dtoucheffect.jpg" width="50%" height="50%"></p>
@@ -201,77 +216,75 @@
 <p><a href="https://github.com/Asura19/My30DaysOfSwift/tree/master/3DTouch" target="_blank" rel="external">本文完整demo</a> (3Dtouch不支持模拟器, 请以真机调试)</p>
 <p>__原创文章, 转载请注明出处</p>
 
-        
       
     </div>
 
     
-
-    
-
-  </article>
-
-    
       
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/05/05/hello-world/">Hello World</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          May 5, 2017
-        </span>
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
       
-        
-        
 
-        
-          <script src="/assets/js/DPlayer.min.js"> </script><p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<video src="http://ws.acgvideo.com/2/02/5401528-1hd.mp4?wsTime=1494415669&platform=pc&wsSecret2=591fb19800de18c4a6c323047c4ff84e&oi=736108944&rate=7" type="video/mp4" preload="auto" poster="https://www.pmtonline.co.uk/yoma_press/wp-content/uploads/2014/11/21_foofighters_lg.jpg" controls="controls" width="100%" height="100%"><br></video>
 
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-<p><img src="http://oph74zx6j.bkt.clouddn.com/swift.png" alt="Swift"></p>
 
-        
+      
+      
+  <div class="post-reward">
+    <input type="checkbox" name="reward" id="reward" hidden />
+    <label class="reward-button" for="reward">赞赏支持</label>
+    <div class="qr-code">
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/wechat.png" title="wechat">
+        </label>
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/alipay.png" title="alipay">
+        </label>
       
     </div>
+  </div>
 
     
 
     
-
-  </article>
-
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/iOS/">iOS</a>
+            
+              <a href="/tags/Swift/">Swift</a>
+            
+              <a href="/tags/3Dtouch/">3Dtouch</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
     
-  </section>
-
-  
-  <nav class="pagination">
     
+      <a class="next" href="/2017/05/05/hello-world/">
+        <span class="next-text nav-default">Hello World</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
     
   </nav>
+
+      </footer>
+    
+
+  </article>
 
 
           </div>
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>  
       </main>
@@ -353,6 +366,12 @@
     </div>
 
     
+  
+
+  
+  
+
+
 
 
     
