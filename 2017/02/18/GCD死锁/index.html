@@ -1,11 +1,196 @@
-<?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
+<!DOCTYPE html>
+<html lang="">
+  <head>
     
-    <entry>
-      <title><![CDATA[GCD死锁]]></title>
-      <url>/2017/02/18/GCD%E6%AD%BB%E9%94%81/</url>
-      <content type="html"><![CDATA[<script src="/assets/js/DPlayer.min.js"> </script><p>一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了). 原文作者: <a href="http://www.brighttj.com/ios/ios-gcd-deadlock.html" target="_blank" rel="external">brighttj(@saitjr)</a></p>
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="skhepgnAG24cr-ctc2IP4LZrldG8Tpq9vdmo7oJeUcA" />
+<meta name="baidu-site-verification" content="X6SobJmsrZ" />
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="GCD死锁"/>
+
+
+
+
+  <meta name="keywords" content="iOS,Swift,GCD,多线程," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Phoenix">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2017/02/18/GCD死锁/"/>
+
+
+<meta name="description" content="一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了). 原文作者: brighttj(@saitjr) 死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽最大努力，也借鉴了很">
+<meta name="keywords" content="iOS,Swift,GCD,多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GCD死锁">
+<meta property="og:url" content="http://yoursite.com/2017/02/18/GCD死锁/index.html">
+<meta property="og:site_name" content="Phoenix">
+<meta property="og:description" content="一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了). 原文作者: brighttj(@saitjr) 死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽最大努力，也借鉴了很">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-1.jpg">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-2.jpg">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-3.jpg">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-4.jpg">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-5.jpg">
+<meta property="og:updated_time" content="2017-06-01T09:10:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GCD死锁">
+<meta name="twitter:description" content="一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了). 原文作者: brighttj(@saitjr) 死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽最大努力，也借鉴了很">
+<meta name="twitter:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-1.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: true,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> GCD死锁 · Phoenix </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Phoenix</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Phoenix</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          GCD死锁
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Feb 18, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#串行与并行"><span class="toc-text">串行与并行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步与异步"><span class="toc-text">同步与异步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GCD-API"><span class="toc-text">GCD API</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-系统标准提供的两个队列"><span class="toc-text">1.系统标准提供的两个队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-除此之外，还可以自己生成队列"><span class="toc-text">2.除此之外，还可以自己生成队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-接下来是同步与异步线程的创建："><span class="toc-text">3.接下来是同步与异步线程的创建：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#案例与分析"><span class="toc-text">案例与分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#案例一"><span class="toc-text">案例一:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例二："><span class="toc-text">案例二：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例三："><span class="toc-text">案例三：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例四"><span class="toc-text">案例四:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例五："><span class="toc-text">案例五：</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <script src="/assets/js/DPlayer.min.js"> </script><p>一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了). 原文作者: <a href="http://www.brighttj.com/ios/ios-gcd-deadlock.html" target="_blank" rel="external">brighttj(@saitjr)</a></p>
 <p>死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽最大努力，也借鉴了很多其他博客中的例子，来讲解GCD死锁问题。</p>
 <h2 id="串行与并行"><a href="#串行与并行" class="headerlink" title="串行与并行"></a>串行与并行</h2><p>在使用GCD的时候，我们会把需要处理的任务放到Block中，然后将任务追加到相应的队列里面，这个队列，叫做Dispatch Queue。然而，存在于两种Dispatch Queue，一种是要等待上一个执行完，再执行下一个的Serial Dispatch Queue，这叫做串行队列；另一种，则是不需要上一个执行完，就能执行下一个的Concurrent Dispatch Queue，叫做并行队列。这两种，均遵循FIFO原则。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">举一个简单的例子，在三个任务中输出1、2、3，串行队列输出是有序的1、2、3，但是并行队列的先后顺序就不一定了。</div></pre></td></tr></table></figure>
@@ -66,79 +251,212 @@
 <p>同步线程中，将任务2加入到了主线程，并且，任务3等待任务2完成以后才能执行。这时的主线程，已经被死循环阻塞了。所以任务2无法执行，当然任务3也无法执行，在死循环后的任务5也不会执行。</p>
 <p>最终，只能得到1和4顺序不定的结果。</p>
 <p><img src="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-5.jpg" alt="deadlock5"></p>
-]]></content>
+
       
-        
-        <tags>
-            
-            <tag> iOS </tag>
-            
-            <tag> Swift </tag>
-            
-            <tag> GCD </tag>
-            
-            <tag> 多线程 </tag>
-            
-        </tags>
-        
-    </entry>
+    </div>
+
     
-    <entry>
-      <title><![CDATA[iOS 3D touch]]></title>
-      <url>/2017/01/22/iOS-3D-touch/</url>
-      <content type="html"><![CDATA[<script src="/assets/js/DPlayer.min.js"> </script><p>简单介绍一下iOS中的3Dtouch. 一般开发中主要有三种情境使用:<br>icon的3Dtouch<br>应用内的预览<br>再就是可能游戏中会用到的按压力度的检测了</p>
-<h2 id="icon的3D-touch"><a href="#icon的3D-touch" class="headerlink" title="icon的3D touch"></a>icon的3D touch</h2><h3 id="第一种方式-在info-plist中添加"><a href="#第一种方式-在info-plist中添加" class="headerlink" title="第一种方式: 在info.plist中添加"></a>第一种方式: 在info.plist中添加</h3><p><img src="http://oph74zx6j.bkt.clouddn.com/3Dtouch_infoplist.png" alt="3Dtouch with info.plist"></p>
-<p>效果如下</p>
-<p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/3Dtoucheffect.jpg" width="50%" height="50%"></p>
-
-<p>解释一下其中的一些key的意思:<br><code>UIApplicationShortcutItemIconType</code> 是使用系统提供的图标, 目前提供了近30种图标<br><code>UIApplicationShortcutItemIconFile</code> 是 .xcassets 文件中自定义的图标<br><code>UIApplicationShortcutItemType</code> 是应用通过3Dtouch启动时传给应用内部的表示, 让内部代码知道点击的是哪个item.<br>其他的key显而易见, 不做解释.</p>
-<p>那么接下来就是在代码中处理3Dtouch事件了:<br>1.首先应用第一次启动:</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> launchedShortcutItem: <span class="type">UIApplicationShortcutItem</span>?</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">application</span><span class="params">(<span class="number">_</span> application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?)</span></span> -&gt; <span class="type">Bool</span> &#123;</div><div class="line">    <span class="keyword">if</span> <span class="keyword">let</span> shortcutItem = launchOptions?[<span class="type">UIApplicationLaunchOptionsKey</span>.shortcutItem] &#123;</div><div class="line">            launchedShortcutItem = shortcutItem <span class="keyword">as</span>? <span class="type">UIApplicationShortcutItem</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>2.应用已经启动, 并从后台3Dtouch启动:</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">application</span><span class="params">(<span class="number">_</span> application: UIApplication, </span></span></div><div class="line">                   performActionFor shortcutItem: UIApplicationShortcutItem, </div><div class="line">                   completionHandler: @escaping <span class="params">(Bool)</span> -&gt; <span class="type">Void</span>) &#123;</div><div class="line">                   </div><div class="line">    <span class="keyword">let</span> handleAction = handleShortcutItem(shortcutItem)</div><div class="line">    completionHandler(handleAction)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>通过以上两种方式都获取了shortcutItem的信息, 就可以进行相应的逻辑处理了.</p>
-<h3 id="用代码动态添加shortcutItem"><a href="#用代码动态添加shortcutItem" class="headerlink" title="用代码动态添加shortcutItem"></a>用代码动态添加shortcutItem</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> item = <span class="type">UIApplicationShortcutItem</span>(type: <span class="string">"two"</span>,</div><div class="line">                                     localizedTitle: <span class="string">"Phoenix"</span>,</div><div class="line">                                     localizedSubtitle: <span class="string">"Make a Call"</span>,</div><div class="line">                                     icon: <span class="type">UIApplicationShortcutIcon</span>(type: .cloud),</div><div class="line">                                     userInfo: <span class="literal">nil</span>)</div><div class="line">        </div><div class="line"><span class="type">UIApplication</span>.shared.shortcutItems = [item]</div></pre></td></tr></table></figure>
-<p>注意: 通过info.plist 和 代码添加的shortcutItem 并不冲突, 取并集, 但系统限制最多能够显示4个item, 因此会自动按顺序截取前4个.</p>
-<h2 id="应用内预览"><a href="#应用内预览" class="headerlink" title="应用内预览"></a>应用内预览</h2><p>先看一下效果图</p>
-<p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/3dtouchpeekpop.gif" width="50%" height="50%"></p>
-
-<h3 id="peek-amp-pop"><a href="#peek-amp-pop" class="headerlink" title="peek &amp; pop"></a>peek &amp; pop</h3><p>peek是由一个能响应事件的view触发的, 需要在viewDidLoad中注册代理和来源视图:</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">super</span>.viewDidLoad()</div><div class="line">    <span class="keyword">self</span>.registerForPreviewing(with: <span class="keyword">self</span> <span class="keyword">as</span> <span class="type">UIViewControllerPreviewingDelegate</span>, sourceView: <span class="keyword">self</span>.view)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>然后是遵守协议和实现协议方法:</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">previewingContext</span><span class="params">(<span class="number">_</span> previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint)</span></span> -&gt; <span class="type">UIViewController</span>? &#123;</div><div class="line">    <span class="comment">// 返回目标控制器</span></div><div class="line">    <span class="keyword">let</span> indexPath = <span class="keyword">self</span>.tableView.indexPathForRow(at: location)</div><div class="line">    <span class="keyword">let</span> storyboard = <span class="type">UIStoryboard</span>(name: <span class="string">"Main"</span>, bundle: <span class="literal">nil</span>)</div><div class="line">    <span class="keyword">let</span> content = storyboard.instantiateViewController(withIdentifier: <span class="string">"ContentViewController"</span>) <span class="keyword">as</span>! <span class="type">ContentViewController</span></div><div class="line">    <span class="keyword">guard</span> indexPath != <span class="literal">nil</span> <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> content</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">previewingContext</span><span class="params">(<span class="number">_</span> previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)</span></span> &#123;</div><div class="line">    <span class="keyword">self</span>.showDetailViewController(viewControllerToCommit, sender: <span class="keyword">self</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="peek-quick-actions"><a href="#peek-quick-actions" class="headerlink" title="peek quick actions"></a>peek quick actions</h3><p>在目标控制器实现以下方法:</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="keyword">var</span> previewActionItems: [<span class="type">UIPreviewActionItem</span>] &#123;</div><div class="line">    <span class="keyword">let</span> action = <span class="type">UIPreviewAction</span>(title: <span class="string">"Save"</span>, style: .<span class="keyword">default</span>) &#123; (action: <span class="type">UIPreviewAction</span>, controller: <span class="type">UIViewController</span>) <span class="keyword">in</span></div><div class="line">        <span class="built_in">print</span>(<span class="string">"Save image"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> [action]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="按压力度监听"><a href="#按压力度监听" class="headerlink" title="按压力度监听"></a>按压力度监听</h2><p>实现了一个小demo</p>
-<p></p><p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/3dtouchweigh.gif" width="50%" height="50%"></p><br>代码如下:<p></p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">touchesBegan</span><span class="params">(<span class="number">_</span> touches: Set&lt;UITouch&gt;, with event: UIEvent?)</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> touch = touches.first</div><div class="line">    <span class="keyword">self</span>.centerPoint = touch?.location(<span class="keyword">in</span>: touch?.view)</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">touchesMoved</span><span class="params">(<span class="number">_</span> touches: Set&lt;UITouch&gt;, with event: UIEvent?)</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> touch = touches.first</div><div class="line">    <span class="keyword">let</span> force = touch?.force</div><div class="line">    <span class="keyword">let</span> maximumPossibleForce = touch?.maximumPossibleForce</div><div class="line">    <span class="keyword">let</span> quotient = force! / maximumPossibleForce!</div><div class="line">    <span class="keyword">let</span> border = <span class="keyword">self</span>.view.frame.size.width</div><div class="line">    <span class="keyword">self</span>.round.layer.cornerRadius = border * <span class="number">0.5</span> * quotient</div><div class="line">    <span class="keyword">self</span>.round.frame = <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: border * quotient, height: border * quotient)</div><div class="line">    <span class="keyword">let</span> point = touch?.location(<span class="keyword">in</span>: touch?.view)</div><div class="line">    <span class="keyword">self</span>.round.center = point!</div><div class="line">        </div><div class="line">    <span class="keyword">let</span> weight = <span class="number">415</span> * quotient</div><div class="line">    <span class="keyword">self</span>.weightLabel.text = <span class="string">"<span class="subst">\(weight)</span> g"</span></div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">touchesEnded</span><span class="params">(<span class="number">_</span> touches: Set&lt;UITouch&gt;, with event: UIEvent?)</span></span> &#123;</div><div class="line">    <span class="keyword">self</span>.round.frame = <span class="type">CGRect</span>.zero</div><div class="line">    <span class="keyword">self</span>.weightLabel.text = <span class="string">"0 g"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><a href="https://github.com/Asura19/My30DaysOfSwift/tree/master/3DTouch" target="_blank" rel="external">本文完整demo</a> (3Dtouch不支持模拟器, 请以真机调试)</p>
-<p>__原创文章, 转载请注明出处</p>
-]]></content>
       
-        
-        <tags>
-            
-            <tag> iOS </tag>
-            
-            <tag> Swift </tag>
-            
-            <tag> 3Dtouch </tag>
-            
-        </tags>
-        
-    </entry>
+      
+
+
+
+      
+      
+  <div class="post-reward">
+    <input type="checkbox" name="reward" id="reward" hidden />
+    <label class="reward-button" for="reward">赞赏支持</label>
+    <div class="qr-code">
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/wechat.png" title="wechat">
+        </label>
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/alipay.png" title="alipay">
+        </label>
+      
+    </div>
+  </div>
+
     
-    <entry>
-      <title><![CDATA[Hello World]]></title>
-      <url>/2017/01/14/hello-world/</url>
-      <content type="html"><![CDATA[<script src="/assets/js/DPlayer.min.js"> </script><p>Hello, This is my first post!</p>
-<video src="http://oph74zx6j.bkt.clouddn.com/Matchbox%20Twenty%20-%20How%20Far%20We%27ve%20Come.mp4" type="video/mp4" preload="none" poster="http://oph74zx6j.bkt.clouddn.com/how%20far%20we%27ve%20com%20screenshot.png" controls="controls" width="100%" height="100%"><br></video>
 
-]]></content>
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/iOS/">iOS</a>
+            
+              <a href="/tags/Swift/">Swift</a>
+            
+              <a href="/tags/GCD/">GCD</a>
+            
+              <a href="/tags/多线程/">多线程</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2017/01/22/iOS-3D-touch/">
+        <span class="next-text nav-default">iOS 3D touch</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
       
         
-    </entry>
+          <a href="mailto:x.rhythm@qq.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://twitter.com/phoenixnirvana7" class="iconfont icon-twitter" title="twitter"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/Asura19" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/phoenix19" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">John Doe</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
     
   
+
   
-</search>
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <script type="text/html" id="search-result">
+    <article class="post">
+      <header class="post-header">
+        <h1 class="post-title">
+          <a href="$url$" class="post-link">
+            $title$
+          </a>
+        </h1>
+      </header>
+      <div class="post-content">
+        $content$
+        <div class="read-more">
+          <a href="$url$" class="read-more-link">
+            阅读更多
+          </a>
+        </div>
+      </div>
+    </article>
+  </script>
+  <script type="text/html" id="no-search-result">
+    <div class="no-result">
+      <h2>No result found!</h2>
+    </div>
+  </script>
+  <script type="text/javascript" src="/js/src/search.js?v=2.4.x"></script>
+
+  </body>
+</html>
