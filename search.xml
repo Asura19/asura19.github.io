@@ -8,7 +8,7 @@
       <content type="html"><![CDATA[<script src="/assets/js/DPlayer.min.js"> </script><p>一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了). 原文作者: <a href="http://www.brighttj.com/ios/ios-gcd-deadlock.html" target="_blank" rel="external">brighttj(@saitjr)</a></p>
 <p>死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽最大努力，也借鉴了很多其他博客中的例子，来讲解GCD死锁问题。</p>
 <h2 id="串行与并行"><a href="#串行与并行" class="headerlink" title="串行与并行"></a>串行与并行</h2><p>在使用GCD的时候，我们会把需要处理的任务放到Block中，然后将任务追加到相应的队列里面，这个队列，叫做Dispatch Queue。然而，存在于两种Dispatch Queue，一种是要等待上一个执行完，再执行下一个的Serial Dispatch Queue，这叫做串行队列；另一种，则是不需要上一个执行完，就能执行下一个的Concurrent Dispatch Queue，叫做并行队列。这两种，均遵循FIFO原则。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">举一个简单的例子，在三个任务中输出1、2、3，串行队列输出是有序的1、2、3，但是并行队列的先后顺序就不一定了。</div></pre></td></tr></table></figure>
+<p><strong>举一个简单的例子，在三个任务中输出1、2、3，串行队列输出是有序的1、2、3，但是并行队列的先后顺序就不一定了。</strong></p>
 <p>那么，并行队列又是怎么在执行呢？</p>
 <p>虽然可以同时多个任务的处理，但是并行队列的处理量，还是要根据当前系统状态来。如果当前系统状态最多处理2个任务，那么1、2会排在前面，3什么时候操作，就看1或者2谁先完成，然后3接在后面。</p>
 <p>串行和并行就简单说到这里，关于它们的技术点其实还有很多，可以自行了解。</p>
