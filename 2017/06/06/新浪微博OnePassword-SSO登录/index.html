@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="skhepgnAG24cr-ctc2IP4LZrldG8Tpq9vdmo7oJeUcA" />
+<meta name="baidu-site-verification" content="X6SobJmsrZ" />
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="新浪微博OnePassword SSO登录"/>
+
+
+
+
+  <meta name="keywords" content="iOS,Swift,SSO,Runtime,Webview," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Phoenix">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2017/06/06/新浪微博OnePassword-SSO登录/"/>
+
+
+<meta name="description" content="发现VVebo的SSO登录在Webview使用了1Password, 觉得可以用运行时来实现.点击查看效果图 实现思路:  以苹果刚公开的工具UIDebuggingInformationOverlay查看微博SDK中的controller和view 以运行时method swizzling 替换系统viewWillAppear方法, 拦截到微博的控制器后, 在相应位置添加1Password按钮">
+<meta name="keywords" content="iOS,Swift,SSO,Runtime,Webview">
+<meta property="og:type" content="article">
+<meta property="og:title" content="新浪微博OnePassword SSO登录">
+<meta property="og:url" content="http://yoursite.com/2017/06/06/新浪微博OnePassword-SSO登录/index.html">
+<meta property="og:site_name" content="Phoenix">
+<meta property="og:description" content="发现VVebo的SSO登录在Webview使用了1Password, 觉得可以用运行时来实现.点击查看效果图 实现思路:  以苹果刚公开的工具UIDebuggingInformationOverlay查看微博SDK中的controller和view 以运行时method swizzling 替换系统viewWillAppear方法, 拦截到微博的控制器后, 在相应位置添加1Password按钮">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/uidebugvc.jpg">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/uidebugview.jpg">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/webviewsafari.png">
+<meta property="og:updated_time" content="2017-06-06T09:12:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="新浪微博OnePassword SSO登录">
+<meta name="twitter:description" content="发现VVebo的SSO登录在Webview使用了1Password, 觉得可以用运行时来实现.点击查看效果图 实现思路:  以苹果刚公开的工具UIDebuggingInformationOverlay查看微博SDK中的controller和view 以运行时method swizzling 替换系统viewWillAppear方法, 拦截到微博的控制器后, 在相应位置添加1Password按钮">
+<meta name="twitter:image" content="http://oph74zx6j.bkt.clouddn.com/uidebugvc.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: true,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 新浪微博OnePassword SSO登录 · Phoenix </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Phoenix</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Phoenix</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          新浪微博OnePassword SSO登录
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Jun 6, 2017
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#关于微博SDK-登录接口就不详述了"><span class="toc-text">关于微博SDK, 登录接口就不详述了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UIDebuggingInformationOverlay的使用"><span class="toc-text">UIDebuggingInformationOverlay的使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#swift中的method-swizzling"><span class="toc-text">swift中的method swizzling</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调用OnePassword"><span class="toc-text">调用OnePassword</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <script src="/assets/js/DPlayer.min.js"> </script><p>发现VVebo的SSO登录在Webview使用了1Password, 觉得可以用运行时来实现.<a href="http://oph74zx6j.bkt.clouddn.com/SSO.gif" target="_blank" rel="external">点击查看效果图</a></p>
+<p>实现思路:</p>
+<ol>
+<li>以苹果刚公开的工具UIDebuggingInformationOverlay查看微博SDK中的controller和view</li>
+<li>以运行时method swizzling 替换系统viewWillAppear方法, 拦截到微博的控制器后, 在相应位置添加1Password按钮</li>
+<li>1Password回调后以Safari调试此Webview,查看h5的elementID, 将账户密码添加进去, 自动登录</li>
+</ol>
+<h3 id="关于微博SDK-登录接口就不详述了"><a href="#关于微博SDK-登录接口就不详述了" class="headerlink" title="关于微博SDK, 登录接口就不详述了"></a>关于微博SDK, 登录接口就不详述了</h3><p>就是要注意微博SDK是在iOS没有安装微博客户端的时候才会调用Webview登录</p>
+<h3 id="UIDebuggingInformationOverlay的使用"><a href="#UIDebuggingInformationOverlay的使用" class="headerlink" title="UIDebuggingInformationOverlay的使用"></a>UIDebuggingInformationOverlay的使用</h3><p>UIDebuggingInformationOverlay是苹果刚公开的UI调试工具<br>使用如下:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> overlayClass = <span class="type">NSClassFromString</span>(<span class="string">"UIDebuggingInformationOverlay"</span>) <span class="keyword">as</span>? <span class="type">UIWindow</span>.<span class="type">Type</span></div><div class="line"><span class="number">_</span> = overlayClass?.perform(<span class="type">NSSelectorFromString</span>(<span class="string">"prepareDebuggingOverlay"</span>))</div><div class="line"><span class="keyword">let</span> overlay = overlayClass?.perform(<span class="type">NSSelectorFromString</span>(<span class="string">"overlay"</span>)).takeUnretainedValue() <span class="keyword">as</span>? <span class="type">UIWindow</span></div><div class="line"><span class="number">_</span> = overlay?.perform(<span class="type">NSSelectorFromString</span>(<span class="string">"toggleVisibility"</span>))</div></pre></td></tr></table></figure>
+<p>然后就可以在手机上看到对应的controller和view了:</p>
+<p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/uidebugvc.jpg" width="50%" height="50%"></p><br><p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/uidebugview.jpg" width="50%" height="50%"></p>
+
+<p>是不是很神奇!<br>OK, 现在我们很方便的拿到了控制器和view的名字”WBSDKAuthorizeWebViewController” “WBSDKWebView”,  当然也有其他方式, 不多说.</p>
+<h3 id="swift中的method-swizzling"><a href="#swift中的method-swizzling" class="headerlink" title="swift中的method swizzling"></a>swift中的method swizzling</h3><p>swift3中dispatch_once_t 被取消了, 因此用全局常量来实现只执行一次swizzling</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">let</span> controllerMethodSwizzling: (<span class="type">UIViewController</span>.<span class="type">Type</span>) -&gt; () = &#123; viewController <span class="keyword">in</span></div><div class="line">    </div><div class="line">    <span class="keyword">let</span> originalSelector = #selector(viewController.viewWillAppear(<span class="number">_</span>:))</div><div class="line">    <span class="keyword">let</span> swizzledSelector = #selector(viewController.proj_viewWillAppear(animated:))</div><div class="line">    </div><div class="line">    <span class="keyword">let</span> originalMethod = class_getInstanceMethod(viewController, originalSelector)</div><div class="line">    <span class="keyword">let</span> swizzledMethod = class_getInstanceMethod(viewController, swizzledSelector)</div><div class="line">    </div><div class="line">    method_exchangeImplementations(originalMethod, swizzledMethod)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UIViewController</span> </span>&#123;</div><div class="line">    open <span class="keyword">override</span> <span class="class"><span class="keyword">class</span> <span class="title">func</span> <span class="title">initialize</span>() </span>&#123;</div><div class="line">        <span class="keyword">guard</span> <span class="keyword">self</span> === <span class="type">UIViewController</span>.<span class="keyword">self</span> <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</div><div class="line">        controllerMethodSwizzling(<span class="keyword">self</span>)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">proj_viewWillAppear</span><span class="params">(animated: Bool)</span></span> &#123;</div><div class="line">        <span class="keyword">self</span>.proj_viewWillAppear(animated: animated)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>但是! 在initialize方法处报了个警告, xcode跟我讲这方法swift不一定调, 而且以后彻底不让在swift里用了.好吧, 那我在applicationDidFinishLaunchingWithOptions调总可以了吧.</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">application</span><span class="params">(<span class="number">_</span> application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?)</span></span> -&gt; <span class="type">Bool</span> &#123;</div><div class="line">   controllerMethodSwizzling(<span class="type">UIViewController</span>.<span class="keyword">self</span>)     </div><div class="line">   <span class="keyword">return</span> <span class="literal">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="调用OnePassword"><a href="#调用OnePassword" class="headerlink" title="调用OnePassword"></a>调用OnePassword</h3><p>现在我们拦截到了微博控制器的viewWillAppear方法了, 接下来就是一些基本操作了.<br>1Password的iOS代码地址<a href="https://github.com/agilebits/onepassword-app-extension" target="_blank" rel="external">https://github.com/agilebits/onepassword-app-extension</a></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">proj_viewWillAppear</span><span class="params">(animated: Bool)</span></span> &#123;</div><div class="line">   <span class="keyword">self</span>.proj_viewWillAppear(animated: animated)</div><div class="line">        </div><div class="line">   <span class="keyword">let</span> viewControllerName = <span class="type">NSStringFromClass</span>(type(of: <span class="keyword">self</span>))</div><div class="line">        </div><div class="line">   <span class="keyword">if</span> viewControllerName == <span class="string">"WBSDKAuthorizeWebViewController"</span> &#123;</div><div class="line">            </div><div class="line">	  <span class="keyword">let</span> hasOnePassword = <span class="type">UIApplication</span>.shared.canOpenURL(<span class="type">URL</span>(string: <span class="string">"org-appextension-feature-password-management://"</span>)!)</div><div class="line">       </div><div class="line">	  <span class="keyword">guard</span> hasOnePassword <span class="keyword">else</span> &#123;</div><div class="line">	      <span class="keyword">return</span></div><div class="line">	  &#125;</div><div class="line">            </div><div class="line">     <span class="keyword">self</span>.navigationItem.rightBarButtonItem = <span class="type">UIBarButtonItem</span>(image: <span class="type">UIImage</span>(named: <span class="string">"onepassword"</span>),</div><div class="line">                                                              landscapeImagePhone: <span class="literal">nil</span>,</div><div class="line">                                                              style: .done,</div><div class="line">                                                              target: <span class="keyword">self</span>,</div><div class="line">                                                              action: #selector(onePassword(<span class="number">_</span>:)))</div><div class="line">&#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">onePassword</span><span class="params">(<span class="number">_</span> sender: AnyObject)</span></span> &#123;</div><div class="line">        <span class="keyword">for</span> view <span class="keyword">in</span> <span class="keyword">self</span>.view.subviews &#123;</div><div class="line">            <span class="keyword">if</span> <span class="type">NSStringFromClass</span>(type(of: view)) == <span class="string">"WBSDKWebView"</span> &#123;</div><div class="line">            </div><div class="line">                <span class="keyword">for</span> subview <span class="keyword">in</span> view.subviews &#123;    </div><div class="line">                    <span class="keyword">let</span> viewClassName = <span class="type">NSStringFromClass</span>(type(of: subview))</div><div class="line">                    <span class="keyword">if</span> viewClassName == <span class="string">"UIWebView"</span> &#123;</div><div class="line">                    </div><div class="line">                        <span class="keyword">let</span> webview = subview <span class="keyword">as</span>! <span class="type">UIWebView</span></div><div class="line">                        <span class="type">OnePasswordExtension</span>.shared().findLogin(forURLString: <span class="string">"weibo.com"</span>, <span class="keyword">for</span>: <span class="keyword">self</span></div><div class="line">                            , sender: sender, completion: &#123; (success, error) <span class="keyword">in</span></div><div class="line">                                <span class="keyword">if</span> (success != <span class="literal">nil</span>) &#123;</div><div class="line">                                    <span class="keyword">let</span> info = success <span class="keyword">as</span>! <span class="type">Dictionary</span>&lt;<span class="type">String</span>, <span class="type">Any</span>&gt;</div><div class="line">                                    <span class="keyword">let</span> username: <span class="type">String</span> = info[<span class="string">"username"</span>] <span class="keyword">as</span>! <span class="type">String</span></div><div class="line">                                    <span class="keyword">let</span> password: <span class="type">String</span> = info[<span class="string">"password"</span>] <span class="keyword">as</span>! <span class="type">String</span></div><div class="line">                                    webview.stringByEvaluatingJavaScript(from: <span class="string">"document.getElementById('loginName').value = '<span class="subst">\(username)</span>'"</span>)</div><div class="line">                                    webview.stringByEvaluatingJavaScript(from: <span class="string">"document.getElementById('loginPassword').value = '<span class="subst">\(password)</span>'"</span>)</div><div class="line">                                    webview.stringByEvaluatingJavaScript(from: <span class="string">"document.getElementById('loginAction').click()"</span>)</div><div class="line">                                    </div><div class="line">                                &#125;</div><div class="line">                        &#125;)</div><div class="line">                        <span class="keyword">break</span></div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">break</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>在获取了账户和密码之后, 用Safari调试Webview可获得elementID, 然后以Webview执行js代码即可</p>
+<p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/webviewsafari.png"></p>
+
+<p>这种场景不太常见, 实现技术都不难, 主要提供一个思路.</p>
+<p>__原创文章, 转载请注明出处</p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+  <div class="post-reward">
+    <input type="checkbox" name="reward" id="reward" hidden />
+    <label class="reward-button" for="reward">赞赏支持</label>
+    <div class="qr-code">
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/wechat.png" title="wechat">
+        </label>
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/alipay.png" title="alipay">
+        </label>
+      
+    </div>
+  </div>
+
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/iOS/">iOS</a>
+            
+              <a href="/tags/Swift/">Swift</a>
+            
+              <a href="/tags/SSO/">SSO</a>
+            
+              <a href="/tags/Runtime/">Runtime</a>
+            
+              <a href="/tags/Webview/">Webview</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/01/11/Hexo-使用教程/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Hexo 使用教程</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/02/18/GCD死锁/">
+        <span class="next-text nav-default">GCD死锁</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:x.rhythm@qq.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://twitter.com/phoenixnirvana7" class="iconfont icon-twitter" title="twitter"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/Asura19" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/phoenix19" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">John Doe</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <script type="text/html" id="search-result">
+    <article class="post">
+      <header class="post-header">
+        <h1 class="post-title">
+          <a href="$url$" class="post-link">
+            $title$
+          </a>
+        </h1>
+      </header>
+      <div class="post-content">
+        $content$
+        <div class="read-more">
+          <a href="$url$" class="read-more-link">
+            Read more..
+          </a>
+        </div>
+      </div>
+    </article>
+  </script>
+  <script type="text/html" id="no-search-result">
+    <div class="no-result">
+      <h2>No result found!</h2>
+    </div>
+  </script>
+  <script type="text/javascript" src="/js/src/search.js?v=2.4.x"></script>
+
+  </body>
+</html>
