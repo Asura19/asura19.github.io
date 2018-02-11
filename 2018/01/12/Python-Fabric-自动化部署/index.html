@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="skhepgnAG24cr-ctc2IP4LZrldG8Tpq9vdmo7oJeUcA" />
+<meta name="baidu-site-verification" content="X6SobJmsrZ" />
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Python Fabric 自动化部署"/>
+
+
+
+
+  <meta name="keywords" content="python,fabric," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Phoenix">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2018/01/12/Python-Fabric-自动化部署/"/>
+
+
+<meta name="description" content="最近公司在做在线抓娃娃, 领导让我写个运维脚本一键部署代码到所有娃娃机, 要求时间是一天之内搞定, 很好, 感谢您的信任, 让一个python零基础的人做这个, 我的内心是崩溃的….只能先找个python基础的帖子过一遍, 然后开始愣写. 现在为什么写这篇文章分享呢, 因为我真的一天之内写出来了, 看来人真的是逼出来的. 了解到fabric框架可以实现多台远程服务器部署, 而我们娃娃机用的是树莓">
+<meta name="keywords" content="python,fabric">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python Fabric 自动化部署">
+<meta property="og:url" content="http://yoursite.com/2018/01/12/Python-Fabric-自动化部署/index.html">
+<meta property="og:site_name" content="Phoenix">
+<meta property="og:description" content="最近公司在做在线抓娃娃, 领导让我写个运维脚本一键部署代码到所有娃娃机, 要求时间是一天之内搞定, 很好, 感谢您的信任, 让一个python零基础的人做这个, 我的内心是崩溃的….只能先找个python基础的帖子过一遍, 然后开始愣写. 现在为什么写这篇文章分享呢, 因为我真的一天之内写出来了, 看来人真的是逼出来的. 了解到fabric框架可以实现多台远程服务器部署, 而我们娃娃机用的是树莓">
+<meta property="og:updated_time" content="2018-02-11T10:00:33.035Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python Fabric 自动化部署">
+<meta name="twitter:description" content="最近公司在做在线抓娃娃, 领导让我写个运维脚本一键部署代码到所有娃娃机, 要求时间是一天之内搞定, 很好, 感谢您的信任, 让一个python零基础的人做这个, 我的内心是崩溃的….只能先找个python基础的帖子过一遍, 然后开始愣写. 现在为什么写这篇文章分享呢, 因为我真的一天之内写出来了, 看来人真的是逼出来的. 了解到fabric框架可以实现多台远程服务器部署, 而我们娃娃机用的是树莓">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: true,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Python Fabric 自动化部署 · Phoenix </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Phoenix</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Phoenix</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Python Fabric 自动化部署
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Jan 12, 2018
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装fabric"><span class="toc-text">安装fabric</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建fabric脚本"><span class="toc-text">创建fabric脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要代码"><span class="toc-text">主要代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#从数据库获取ip"><span class="toc-text">从数据库获取ip</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <script src="/assets/js/DPlayer.min.js"> </script><p>最近公司在做在线抓娃娃, 领导让我写个运维脚本一键部署代码到所有娃娃机, 要求时间是一天之内搞定, 很好, 感谢您的信任, 让一个python零基础的人做这个, 我的内心是崩溃的….只能先找个python基础的帖子过一遍, 然后开始愣写. 现在为什么写这篇文章分享呢, 因为我真的一天之内写出来了, 看来人真的是逼出来的.</p>
+<p>了解到fabric框架可以实现多台远程服务器部署, 而我们娃娃机用的是树莓派安装的Ubuntu, 同样都是linux所以适用</p>
+<h2 id="安装fabric"><a href="#安装fabric" class="headerlink" title="安装fabric"></a>安装fabric</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pip install fabric</div></pre></td></tr></table></figure>
+<h2 id="创建fabric脚本"><a href="#创建fabric脚本" class="headerlink" title="创建fabric脚本"></a>创建fabric脚本</h2><p>新建名为fabfile.py的文件, 添加代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">"hello world"</span>)</div></pre></td></tr></table></figure>
+<p><code>$ fab hello</code> -&gt; hello world</p>
+<p>fabfile.py 是fabric默认识别的文件名, 也可以使用别的文件名, 但使用时加参数, 如:</p>
+<p><code>$ fab -f test.py hello</code> -&gt; hello world</p>
+<h2 id="主要代码"><a href="#主要代码" class="headerlink" title="主要代码"></a>主要代码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"><span class="keyword">from</span> fabric.api <span class="keyword">import</span> *</div><div class="line"><span class="keyword">from</span> fabric.contrib.files <span class="keyword">import</span> append</div><div class="line"></div><div class="line">env.hosts = [<span class="string">'192.168.0.1'</span>, <span class="string">'192.168.0.2:20001'</span>] <span class="comment"># 地址列表</span></div><div class="line">env.password = <span class="string">'I am the password of the remote server'</span></div><div class="line">env.user = <span class="string">'root'</span></div><div class="line">env.colorize_errors = <span class="keyword">True</span> <span class="comment"># 出错时以红色显示日志</span></div><div class="line"></div><div class="line"><span class="string">'''</span></div><div class="line">fabric 中lcd表示在本地服务器执行cd, local表示在本地执行命令</div><div class="line">@runs_once 表示不管有多少个host, @runs_once修饰的方法只执行一次</div><div class="line">此方法就是拉代码, 但要配置ssh key, 否则手动输密码怎么能叫一键部署呢</div><div class="line">'''</div><div class="line"><span class="meta">@runs_once</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">prepare</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">with</span> lcd(<span class="string">'/home/yunai/wawaji/device/'</span>):</div><div class="line">         local(<span class="string">'git pull'</span>)</div><div class="line">         </div><div class="line"><span class="string">'''</span></div><div class="line">@parallel 修饰的方法就是在每台机器上都执行的方法</div><div class="line">pool_size 表示最大并发数量</div><div class="line">'''</div><div class="line"><span class="meta">@parallel(pool_size=10)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">()</span>:</span></div><div class="line">    <span class="comment"># 输出等级设置，隐藏指定的类型</span></div><div class="line">    <span class="keyword">with</span> settings(</div><div class="line">        hide(<span class="string">'warnings'</span>, <span class="string">'running'</span>, <span class="string">'stdout'</span>, <span class="string">'stderr'</span>),</div><div class="line">        warn_only=<span class="keyword">True</span></div><div class="line">    ):</div><div class="line">        <span class="comment"># 实际业务, 我们是以某个文件的某行内容来作为是否更新过的标准, 这个就根据实际需求来制定就好</span></div><div class="line">        <span class="keyword">if</span> sudo(<span class="string">'grep internal /home/yunai/wawaji/control/control.py'</span>):</div><div class="line">            <span class="comment"># env.host_string 表示当前正在更新的机器的host</span></div><div class="line">            <span class="keyword">print</span> env.host_string + <span class="string">' had been updated before, canceled.'</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="keyword">print</span> env.host_string + <span class="string">' updating file...'</span></div><div class="line">            <span class="comment"># 以sudo更新一个文件</span></div><div class="line">            put(local_path=<span class="string">'/home/yunai/wawaji/device/control/control.py'</span>, remote_path=<span class="string">'/home/yunai/wawaji/control/'</span>, use_sudo=<span class="keyword">True</span>, mode=<span class="number">755</span>)</div><div class="line">            <span class="comment"># 以sudo给文件追加内容, 相当于:</span></div><div class="line">            <span class="comment"># sudo('echo "NTP=192.168.0.3 192.168.0.2" &gt;&gt; /etc/systemd/timesyncd.conf')</span></div><div class="line">            <span class="comment"># 但fabric的append会自动识别文件末是否已有该内容, 如果有, 则不再追加</span></div><div class="line">            append(<span class="string">'/etc/systemd/timesyncd.conf'</span>, <span class="string">'NTP=192.168.0.3 192.168.0.2'</span>, use_sudo=<span class="keyword">True</span>)</div><div class="line">            <span class="keyword">print</span> env.host_string + <span class="string">' update completed'</span></div><div class="line"></div><div class="line"><span class="string">'''</span></div><div class="line">在外部设置ip的方法</div><div class="line">也可以不使用该方法, 在内部直接写好所有ip</div><div class="line">'''      </div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_ips</span><span class="params">(*ips)</span>:</span></div><div class="line">    [env.hosts.append(p) <span class="keyword">for</span> p <span class="keyword">in</span> ips <span class="keyword">if</span> p <span class="keyword">not</span> <span class="keyword">in</span> env.hosts]</div></pre></td></tr></table></figure>
+<p>所以我们可以这样来调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ fab set_ips:&apos;192.168.0.3&apos;,&apos;192.168.0.22&apos; prepare update</div></pre></td></tr></table></figure>
+<h2 id="从数据库获取ip"><a href="#从数据库获取ip" class="headerlink" title="从数据库获取ip"></a>从数据库获取ip</h2><p>初期领导给我的ip列表都是截图, 我的内心那是相当崩溃的, 难道手打出来吗, 当然不是, 机智的我找了个图片识别网站先转成文本, 再用正则匹配出所有ip.  后期步入正轨用数据库就好了, 下面来说python怎么使用<strong>pymysql</strong>模块来操作数据库</p>
+<p>安装pymysql</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pip install pymysql</div></pre></td></tr></table></figure>
+<p>操作数据库</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> pymysql</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">all_ip</span><span class="params">()</span>:</span></div><div class="line">    connection = pymysql.connect(</div><div class="line">        host = <span class="string">"127.0.0.1"</span>,</div><div class="line">        user = <span class="string">"root"</span>,</div><div class="line">        password = <span class="string">"I am the password of mysql"</span>,</div><div class="line">        database = <span class="string">"doll"</span>, <span class="comment"># 数据库名</span></div><div class="line">        charset = <span class="string">'utf8'</span></div><div class="line">        <span class="comment"># 我们可以在此处来配置返回类型, 如下将按字典返回, 不定义则返回tuple</span></div><div class="line">        <span class="comment"># cursorclass = pymysql.cursors.DictCursor</span></div><div class="line">        <span class="comment"># 文档链接: http://mysql-python.sourceforge.net/MySQLdb-1.2.2/public/MySQLdb.cursors-module.html</span></div><div class="line">    )</div><div class="line"></div><div class="line">    cursor = connection.cursor()</div><div class="line">    result = cursor.execute(<span class="string">"select ipaddress from device;"</span>) <span class="comment"># 查表</span></div><div class="line"></div><div class="line">    result = cursor.fetchall()</div><div class="line">    cursor.close()</div><div class="line">    connection.close()</div><div class="line">    </div><div class="line">    <span class="comment"># 此时result结果应为(('192.168.0.1',), ('192.168.0.33',),)</span></div><div class="line">    new_array = []</div><div class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> map(<span class="keyword">lambda</span> x: x, result):</div><div class="line">        <span class="keyword">for</span> ip <span class="keyword">in</span> t:</div><div class="line">            new_array.append(ip)</div><div class="line">    <span class="comment"># 将ip数组转换为方法参数格式</span></div><div class="line">    ipset = set(new_array)</div><div class="line">    <span class="comment"># 内部设置ip列表</span></div><div class="line">    set_ips(*ipset)</div></pre></td></tr></table></figure>
+<p>这样我们就可以直接这样来调用了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ fab all_ip update</div></pre></td></tr></table></figure>
+<p>最后附上Fabric文档链接 <a href="http://docs.fabfile.org/en/1.14/" target="_blank" rel="external">http://docs.fabfile.org/en/1.14/</a> 需要什么查文档就好了!!</p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+  <div class="post-reward">
+    <input type="checkbox" name="reward" id="reward" hidden />
+    <label class="reward-button" for="reward">赞赏支持</label>
+    <div class="qr-code">
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/wechat.png" title="wechat">
+        </label>
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/alipay.png" title="alipay">
+        </label>
+      
+    </div>
+  </div>
+
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/fabric/">fabric</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/01/11/Hexo-使用教程/">
+        <span class="next-text nav-default">Hexo 使用教程</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:x.rhythm@qq.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://twitter.com/phoenixnirvana7" class="iconfont icon-twitter" title="twitter"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/Asura19" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/phoenix19" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">John Doe</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <script type="text/html" id="search-result">
+    <article class="post">
+      <header class="post-header">
+        <h1 class="post-title">
+          <a href="$url$" class="post-link">
+            $title$
+          </a>
+        </h1>
+      </header>
+      <div class="post-content">
+        $content$
+        <div class="read-more">
+          <a href="$url$" class="read-more-link">
+            Read more..
+          </a>
+        </div>
+      </div>
+    </article>
+  </script>
+  <script type="text/html" id="no-search-result">
+    <div class="no-result">
+      <h2>No result found!</h2>
+    </div>
+  </script>
+  <script type="text/javascript" src="/js/src/search.js?v=2.4.x"></script>
+
+  </body>
+</html>
