@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="skhepgnAG24cr-ctc2IP4LZrldG8Tpq9vdmo7oJeUcA" />
+<meta name="baidu-site-verification" content="X6SobJmsrZ" />
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Objective-C 中的消息发送和转发"/>
+
+
+
+
+  <meta name="keywords" content="iOS,Objective-C,msg_Send," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Phoenix">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2018/03/01/Objective-C-中的消息发送和转发/"/>
+
+
+<meta name="description" content="Objective-C 的方法调用被苹果成为”发消息”. objc的消息机制是由运行时实现、非常灵活动态。这篇文章简单记录一下objc运行时对于消息发送和转发的实现. 本文Demo 编译器转换1[cat mew]; 意为cat对象调用new方法, 也就是向cat对象发送mew消息, 实际上编译器会将这行代码转换为 1objc_msgSend(cat, @selector(mew)); 验证如下:">
+<meta name="keywords" content="iOS,Objective-C,msg_Send">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Objective-C 中的消息发送和转发">
+<meta property="og:url" content="http://yoursite.com/2018/03/01/Objective-C-中的消息发送和转发/index.html">
+<meta property="og:site_name" content="Phoenix">
+<meta property="og:description" content="Objective-C 的方法调用被苹果成为”发消息”. objc的消息机制是由运行时实现、非常灵活动态。这篇文章简单记录一下objc运行时对于消息发送和转发的实现. 本文Demo 编译器转换1[cat mew]; 意为cat对象调用new方法, 也就是向cat对象发送mew消息, 实际上编译器会将这行代码转换为 1objc_msgSend(cat, @selector(mew)); 验证如下:">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/instrumentObjcMessageSends.png">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/instrumentObjcMessageSends_path.png">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/instrumentObjcMessageSends_result.png">
+<meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/message_forward.png">
+<meta property="og:updated_time" content="2018-03-01T12:16:35.655Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Objective-C 中的消息发送和转发">
+<meta name="twitter:description" content="Objective-C 的方法调用被苹果成为”发消息”. objc的消息机制是由运行时实现、非常灵活动态。这篇文章简单记录一下objc运行时对于消息发送和转发的实现. 本文Demo 编译器转换1[cat mew]; 意为cat对象调用new方法, 也就是向cat对象发送mew消息, 实际上编译器会将这行代码转换为 1objc_msgSend(cat, @selector(mew)); 验证如下:">
+<meta name="twitter:image" content="http://oph74zx6j.bkt.clouddn.com/instrumentObjcMessageSends.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: true,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Objective-C 中的消息发送和转发 · Phoenix </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Phoenix</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Phoenix</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Objective-C 中的消息发送和转发
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Mar 1, 2018
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#编译器转换"><span class="toc-text">编译器转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#objc-msgSend"><span class="toc-text">objc_msgSend</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#消息转发"><span class="toc-text">消息转发</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <script src="/assets/js/DPlayer.min.js"> </script><p>Objective-C 的方法调用被苹果成为”发消息”. objc的消息机制是由运行时实现、非常灵活动态。这篇文章简单记录一下objc运行时对于消息发送和转发的实现. <a href="https://github.com/Asura19/ObjcMessageDemo" target="_blank" rel="external">本文Demo</a></p>
+<h2 id="编译器转换"><a href="#编译器转换" class="headerlink" title="编译器转换"></a>编译器转换</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[cat mew];</div></pre></td></tr></table></figure>
+<p>意为cat对象调用new方法, 也就是向cat对象发送mew消息, 实际上编译器会将这行代码转换为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">objc_msgSend(cat, @selector(mew));</div></pre></td></tr></table></figure>
+<p>验证如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">#import &lt;objc/message.h&gt;</div><div class="line"></div><div class="line">@interface Cat : NSObject</div><div class="line">@property (nonatomic, copy) NSString *name;</div><div class="line">- (void)mew;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation Cat</div><div class="line">- (void)mew &#123;</div><div class="line">    NSLog(@&quot;喵~&quot;);</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">int main(int argc, const char * argv[]) &#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">       Cat *cat = Cat.new;</div><div class="line">       [cat mew];</div><div class="line">       objc_msgSend(cat, @selector(mew));</div><div class="line">    &#125;</div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>结果是输出两次:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">喵~</div><div class="line">喵~</div></pre></td></tr></table></figure>
+<p>当然我们也可以执行 <code>clang -rewrite-objc main.m</code> 将oc转换为C++代码来查看.</p>
+<h2 id="objc-msgSend"><a href="#objc-msgSend" class="headerlink" title="objc_msgSend"></a>objc_msgSend</h2><p><a href="https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend?language=occ" target="_blank" rel="external">文档</a>中这样写:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">id objc_msgSend(id self, SEL _cmd, ...)</div></pre></td></tr></table></figure>
+<p>将一个消息发送给一个对象，并且返回一个值。<br>其中，self是消息的接受者，_cmd是selector， …是可变参数列表。</p>
+<p>为了了解objc_msgSend方法做了什么，这里需要查看一下objc runtime的<a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="external">源码</a><br>首先 runtime定义了如下的数据类型:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">typedef struct objc_class *Class;</div><div class="line">typedef struct objc_object *id;</div><div class="line"></div><div class="line">struct objc_object &#123;</div><div class="line">    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">struct objc_class : objc_object  &#123;</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line"></div><div class="line">typedef struct objc_selector *SEL;</div><div class="line">typedef id _Nullable (*IMP)(id _Nonnull, SEL _Nonnull, ...);</div></pre></td></tr></table></figure>
+<p><strong>id</strong>指代objc中的对象，每个对象的在内存的结构并不是确定的，但其首地址指向的肯定是isa。通过isa指针，运行时就能获取到objc_class。</p>
+<p><strong>objc_class</strong>表示对象的Class，它的结构是确定的，由编译器生成。</p>
+<p><strong>SEL</strong>表示选择器，这是一个不透明结构体。但是实际上，通常可以把它理解为一个字符串。例如printf(“%s”,@selector(isEqual:))会打印出”isEqual:”。运行时维护着一张SEL的表，将相同字符串的方法名映射到唯一一个SEL。  通过sel_registerName(char *name)方法，可以查找到这张表中方法名对应的SEL。苹果提供了一个语法糖@selector用来方便地调用该函数。</p>
+<p><strong>IMP</strong>是一个函数指针。objc中的方法最终会被转换成纯C的函数，IMP就是为了表示这些函数的地址。</p>
+<p>那么objc_msgSend究竟做了什么呢? 这个方法是由汇编实现得, 用伪代码大概可以表示为:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">id objc_msgSend(id self, SEL op, ...) &#123;</div><div class="line">    if (!self) return nil;</div><div class="line">	IMP imp = class_getMethodImplementation(self-&gt;isa, SEL op);</div><div class="line">	imp(self, op, ...); //调用这个函数，伪代码...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>另外在objc-msg-arm64.s 中找到如下关键代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">.macro MethodTableLookup</div><div class="line">	...</div><div class="line">	bl	__class_lookupMethodAndLoadCache3</div></pre></td></tr></table></figure>
+<p>以及objc-runtime-new.mm :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div></pre></td><td class="code"><pre><div class="line">IMP _class_lookupMethodAndLoadCache3(id obj, SEL sel, Class cls)</div><div class="line">&#123;</div><div class="line">    return lookUpImpOrForward(cls, sel, obj, </div><div class="line">                              YES/*initialize*/, NO/*cache*/, YES/*resolver*/);</div><div class="line">&#125;</div><div class="line"></div><div class="line">IMP lookUpImpOrForward(Class cls, SEL sel, id inst, </div><div class="line">                       bool initialize, bool cache, bool resolver)</div><div class="line">&#123;</div><div class="line">    ...</div><div class="line">    </div><div class="line">    // Try this class&apos;s cache.</div><div class="line"></div><div class="line">    imp = cache_getImp(cls, sel);</div><div class="line">    if (imp) goto done;</div><div class="line"></div><div class="line">    // Try this class&apos;s method lists.</div><div class="line">    &#123;</div><div class="line">        Method meth = getMethodNoSuper_nolock(cls, sel);</div><div class="line">        if (meth) &#123;</div><div class="line">            log_and_fill_cache(cls, meth-&gt;imp, sel, inst, cls);</div><div class="line">            imp = meth-&gt;imp;</div><div class="line">            goto done;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Try superclass caches and method lists.</div><div class="line">    &#123;</div><div class="line">        unsigned attempts = unreasonableClassCount();</div><div class="line">        for (Class curClass = cls-&gt;superclass;</div><div class="line">             curClass != nil;</div><div class="line">             curClass = curClass-&gt;superclass)</div><div class="line">        &#123;</div><div class="line">            // Halt if there is a cycle in the superclass chain.</div><div class="line">            if (--attempts == 0) &#123;</div><div class="line">                _objc_fatal(&quot;Memory corruption in class list.&quot;);</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            // Superclass cache.</div><div class="line">            imp = cache_getImp(curClass, sel);</div><div class="line">            if (imp) &#123;</div><div class="line">                if (imp != (IMP)_objc_msgForward_impcache) &#123;</div><div class="line">                    // Found the method in a superclass. Cache it in this class.</div><div class="line">                    log_and_fill_cache(cls, imp, sel, inst, curClass);</div><div class="line">                    goto done;</div><div class="line">                &#125;</div><div class="line">                else &#123;</div><div class="line">                    // Found a forward:: entry in a superclass.</div><div class="line">                    // Stop searching, but don&apos;t cache yet; call method </div><div class="line">                    // resolver for this class first.</div><div class="line">                    break;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            // Superclass method list.</div><div class="line">            Method meth = getMethodNoSuper_nolock(curClass, sel);</div><div class="line">            if (meth) &#123;</div><div class="line">                log_and_fill_cache(cls, meth-&gt;imp, sel, inst, curClass);</div><div class="line">                imp = meth-&gt;imp;</div><div class="line">                goto done;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // No implementation found. Try method resolver once.</div><div class="line"></div><div class="line">    if (resolver  &amp;&amp;  !triedResolver) &#123;</div><div class="line">        runtimeLock.unlockRead();</div><div class="line">        _class_resolveMethod(cls, sel, inst);</div><div class="line">        runtimeLock.read();</div><div class="line">        // Don&apos;t cache the result; we don&apos;t hold the lock so it may have </div><div class="line">        // changed already. Re-do the search from scratch instead.</div><div class="line">        triedResolver = YES;</div><div class="line">        goto retry;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // No implementation found, and method resolver didn&apos;t help. </div><div class="line">    // Use forwarding.</div><div class="line"></div><div class="line">    imp = (IMP)_objc_msgForward_impcache;</div><div class="line">    cache_fill(cls, sel, imp, inst);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以<code>[cat mew];</code>为例, 总结一下就是:</p>
+<ol>
+<li>通过cat的isa指针找到它的class, 也就是Cat类</li>
+<li>在Cat的cache列表中查找mew</li>
+<li>在Cat的method列表中查找mew</li>
+<li>在父类的cache和method列表中查找mew</li>
+<li>在2-4的过程中, 一旦找到就执行方法</li>
+<li>没有找到任何的方法实现, Try method resolver once, 也就是我们说的resolveInstanceMethod方法</li>
+<li>resolveInstanceMethod没实现, 就进入转发机制</li>
+</ol>
+<p><strong>另需注意</strong>: 如果是类方法的调用, 则是去Cat的元类中查找, 因为类方法都是保存在meta class中, 依次向父元类查找, 注意, 到NSObject meta class, 它的父类是NSObject本类, 如果这个时候有一个同名的实例方法, 也可以调用. 例:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@interface NSObject (Sark)</div><div class="line">+ (void)foo;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation NSObject (Sark)</div><div class="line">- (void)foo &#123;</div><div class="line">    NSLog(@&quot;IMP: - [NSObject (sark) foo]&quot;);</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">[NSObject foo]; // 打印 IMP: - [NSObject (sark) foo]</div></pre></td></tr></table></figure>
+<h2 id="消息转发"><a href="#消息转发" class="headerlink" title="消息转发"></a>消息转发</h2><p>首先我们先来验证一下, 调用一个不存在的方法, 在运行时发了哪些消息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Cat *cat = Cat.new;</div><div class="line">[cat performSelector:@selector(lalala)];</div></pre></td></tr></table></figure>
+<p>具体方法如下:</p>
+<ol>
+<li>断点暂停后执行<code>call (void)instrumentObjcMessageSends(YES)</code><p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/instrumentObjcMessageSends.png"></p></li>
+<li>然后过掉断点, 程序崩溃</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">2018-03-01 17:37:05.671634+0800 msg_send[18226:862391] -[Cat lalala]: unrecognized selector sent to instance 0x10054d9e0</div><div class="line">2018-03-01 17:37:05.676829+0800 msg_send[18226:862391] *** Terminating app due to uncaught exception &apos;NSInvalidArgumentException&apos;, reason: &apos;-[Cat lalala]: unrecognized selector sent to instance 0x10054d9e0&apos;</div><div class="line">*** First throw call stack:</div><div class="line">(</div><div class="line">	0   CoreFoundation                      0x00007fff4eabc54b __exceptionPreprocess + 171</div><div class="line">	1   libobjc.A.dylib                     0x00007fff7658bc76 objc_exception_throw + 48</div><div class="line">	2   CoreFoundation                      0x00007fff4eb55024 -[NSObject(NSObject) doesNotRecognizeSelector:] + 132</div><div class="line">	3   CoreFoundation                      0x00007fff4ea32a90 ___forwarding___ + 1456</div><div class="line">	4   CoreFoundation                      0x00007fff4ea32458 _CF_forwarding_prep_0 + 120</div><div class="line">	5   msg_send                            0x0000000100001c76 main + 86</div><div class="line">	6   libdyld.dylib                       0x00007fff771a5015 start + 1</div><div class="line">)</div><div class="line">libc++abi.dylib: terminating with uncaught exception of type NSException</div></pre></td></tr></table></figure>
+<p>3.在Terminal中输入:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">open /private/tmp</div></pre></td></tr></table></figure>
+<p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/instrumentObjcMessageSends_path.png"></p><br>4.打开查看<br><p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/instrumentObjcMessageSends_result.png"></p>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- Cat NSObject performSelector:</div><div class="line">+ Cat NSObject resolveInstanceMethod:</div><div class="line">+ Cat NSObject resolveInstanceMethod:</div><div class="line">- Cat NSObject forwardingTargetForSelector:</div><div class="line">- Cat NSObject forwardingTargetForSelector:</div><div class="line">- Cat NSObject methodSignatureForSelector:</div><div class="line">- Cat NSObject methodSignatureForSelector:</div><div class="line">- Cat NSObject class</div><div class="line">- Cat NSObject doesNotRecognizeSelector:</div><div class="line">- Cat NSObject doesNotRecognizeSelector:</div><div class="line">- Cat NSObject class</div></pre></td></tr></table></figure>
+<p>结合 <a href="https://developer.apple.com/documentation/objectivec/nsobject?language=objc" target="_blank" rel="external">NSObject官方文档</a>, 转发机制可如图表示:</p>
+<p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/message_forward.png"></p>
+
+<p>1.调用resolveInstanceMethod:方法，允许用户在此时为该Class动态添加实现。如果有实现了，则调用并返回。如果仍没实现，继续下面的动作。</p>
+<p>2.调用forwardingTargetForSelector:方法，尝试找到一个能响应该消息的对象。如果获取到，则直接转发给它。如果返回了nil，继续下面的动作。</p>
+<p>3.调用methodSignatureForSelector:方法，尝试获得一个方法签名。如果获取不到，则直接调用doesNotRecognizeSelector抛出异常。</p>
+<p>4.调用forwardInvocation:方法，将地3步获取到的方法签名包装成Invocation传入，如何处理就在这里面了。</p>
+<p>上面这4个方法均是模板方法，开发者可以override，由runtime来调用。最常见的实现消息转发，就是重写方法3和4，吞掉一个消息或者代理给其他对象都是没问题的。</p>
+<p><strong>示例</strong>: 我们为Dog类添加name属性和实例, 但通过@dynamic使其不自动生成setter和getter</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">@interface Dog : NSObject</div><div class="line">@property (nonatomic, copy) NSString *name;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation Dog &#123;</div><div class="line">    NSString *_name;</div><div class="line">&#125;</div><div class="line">@dynamic name;</div><div class="line"></div><div class="line">int main(int argc, const char * argv[]) &#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">        Dog *dog = [Dog new];</div><div class="line">        dog.name = @&quot;Kiki&quot;;</div><div class="line">        NSLog(@&quot;%@&quot;, dog.name);</div><div class="line">    &#125;</div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>此时dog对象没有setName: 方法, 会尝试解决, 我们来实现resolveInstanceMethod 方法, 并为name添加setter 和 getter (他们的内部实现可以用指针指向, 也可以用运行时api)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">@implementation Dog &#123;</div><div class="line">    NSString *_name;</div><div class="line">&#125;</div><div class="line">@dynamic name;</div><div class="line">void mySetName(id self, SEL _cmd, NSString *newValue) &#123;</div><div class="line">//    Ivar ivar = class_getInstanceVariable(Dog.class, &quot;_name&quot;);</div><div class="line">//    object_setIvar(self, ivar, [newValue copy]);</div><div class="line">    if (((Dog *)self)-&gt;_name != newValue) &#123;</div><div class="line">        ((Dog *)self)-&gt;_name = [newValue copy];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">NSString * myGetName(id self, SEL _cmd) &#123;</div><div class="line">//    Ivar ivar = class_getInstanceVariable(Dog.class, &quot;_name&quot;);</div><div class="line">//    return object_getIvar(self, ivar);</div><div class="line">    return ((Dog *)self)-&gt;_name;</div><div class="line">&#125;</div><div class="line"></div><div class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel &#123;</div><div class="line">    NSLog(@&quot;%s&quot;, __func__);</div><div class="line">    if ([NSStringFromSelector(sel) isEqualToString:@&quot;setName:&quot;]) &#123;</div><div class="line">        class_addMethod(self, sel, (IMP)mySetName, &quot;v@:@&quot;);</div><div class="line">    &#125;</div><div class="line">    else &#123;</div><div class="line">        class_addMethod(self, sel, (IMP)myGetName, &quot;@@:&quot;);</div><div class="line">    &#125;</div><div class="line">    return YES;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>如果不实现上述方法, 也可以转发给别的对象:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@implementation Dog &#123;</div><div class="line">    NSString *_name;</div><div class="line">&#125;</div><div class="line">@dynamic name;</div><div class="line"></div><div class="line">- (id)forwardingTargetForSelector:(SEL)aSelector &#123;</div><div class="line">    NSLog(@&quot;%s&quot;, __func__);</div><div class="line">    return Cat.new;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>该消息转发给Cat类的一个对象, 去调用Cat的setName:方法, 当然这没什么实际的意义.</p>
+<p>第三次补救:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">@implementation Dog &#123;</div><div class="line">    NSString *_name;</div><div class="line">&#125;</div><div class="line">@dynamic name;</div><div class="line"></div><div class="line">- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector &#123;</div><div class="line">    NSLog(@&quot;%s&quot;, __func__);</div><div class="line">    NSString *selStr = NSStringFromSelector(aSelector);</div><div class="line">    if([selStr isEqualToString:@&quot;name&quot;]) &#123;</div><div class="line">        NSMethodSignature *sig = [NSMethodSignature signatureWithObjCTypes:&quot;@@:&quot;];</div><div class="line">        return sig;</div><div class="line">    &#125;</div><div class="line">    else &#123;</div><div class="line">        NSMethodSignature *sig = [NSMethodSignature signatureWithObjCTypes:&quot;v@:@&quot;];</div><div class="line">        return sig;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)forwardInvocation:(NSInvocation *)anInvocation &#123;</div><div class="line">    NSLog(@&quot;%s&quot;, __func__);</div><div class="line">    </div><div class="line">    SEL sel = [anInvocation selector];</div><div class="line">    Cat *cat = [[Cat alloc] init];</div><div class="line">    if([cat respondsToSelector:sel]) &#123;</div><div class="line">        [anInvocation invokeWithTarget:cat];</div><div class="line">    &#125;</div><div class="line">    else &#123;</div><div class="line">        [self doesNotRecognizeSelector:sel];</div><div class="line">    &#125; </div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>首先生成方法签名, 然后转发调用, 也可以不使用doesNotRecognizeSelector, 这样就吞没了这个消息.</p>
+<p>如果没有实现forward, 那直接调用doesNotRecognizeSelector, 抛出exception.</p>
+<p>__原创文章, 转载请注明出处</p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+  <div class="post-reward">
+    <input type="checkbox" name="reward" id="reward" hidden />
+    <label class="reward-button" for="reward">赞赏支持</label>
+    <div class="qr-code">
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/wechat.png" title="wechat">
+        </label>
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/alipay.png" title="alipay">
+        </label>
+      
+    </div>
+  </div>
+
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/iOS/">iOS</a>
+            
+              <a href="/tags/Objective-C/">Objective-C</a>
+            
+              <a href="/tags/msg-Send/">msg_Send</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/01/12/Python-Fabric-自动化部署/">
+        <span class="next-text nav-default">Python Fabric 自动化部署</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:x.rhythm@qq.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://twitter.com/phoenixnirvana7" class="iconfont icon-twitter" title="twitter"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/Asura19" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/phoenix19" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">John Doe</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <script type="text/html" id="search-result">
+    <article class="post">
+      <header class="post-header">
+        <h1 class="post-title">
+          <a href="$url$" class="post-link">
+            $title$
+          </a>
+        </h1>
+      </header>
+      <div class="post-content">
+        $content$
+        <div class="read-more">
+          <a href="$url$" class="read-more-link">
+            Read more..
+          </a>
+        </div>
+      </div>
+    </article>
+  </script>
+  <script type="text/html" id="no-search-result">
+    <div class="no-result">
+      <h2>No result found!</h2>
+    </div>
+  </script>
+  <script type="text/javascript" src="/js/src/search.js?v=2.4.x"></script>
+
+  </body>
+</html>
