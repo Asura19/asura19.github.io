@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="skhepgnAG24cr-ctc2IP4LZrldG8Tpq9vdmo7oJeUcA" />
+<meta name="baidu-site-verification" content="X6SobJmsrZ" />
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="atexit - Python程序结束时的回调"/>
+
+
+
+
+  <meta name="keywords" content="python,atexit," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Phoenix">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2018/02/02/atexit-Python程序结束时的回调/"/>
+
+
+<meta name="description" content="用python写一些api测试, 需要在程序结束前记录时间, 尝试了各种中文的英文的关键词, 终于搜索到atexit这个模块. 123456789101112131415import atexitdef exit_function():    print(&quot;exiting&quot;)	def exit_function2(name, age):    print(&quot;exiting2: &quot; + name">
+<meta name="keywords" content="python,atexit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="atexit - Python程序结束时的回调">
+<meta property="og:url" content="http://yoursite.com/2018/02/02/atexit-Python程序结束时的回调/index.html">
+<meta property="og:site_name" content="Phoenix">
+<meta property="og:description" content="用python写一些api测试, 需要在程序结束前记录时间, 尝试了各种中文的英文的关键词, 终于搜索到atexit这个模块. 123456789101112131415import atexitdef exit_function():    print(&quot;exiting&quot;)	def exit_function2(name, age):    print(&quot;exiting2: &quot; + name">
+<meta property="og:updated_time" content="2018-03-02T07:49:02.765Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="atexit - Python程序结束时的回调">
+<meta name="twitter:description" content="用python写一些api测试, 需要在程序结束前记录时间, 尝试了各种中文的英文的关键词, 终于搜索到atexit这个模块. 123456789101112131415import atexitdef exit_function():    print(&quot;exiting&quot;)	def exit_function2(name, age):    print(&quot;exiting2: &quot; + name">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: true,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> atexit - Python程序结束时的回调 · Phoenix </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Phoenix</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Phoenix</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          atexit - Python程序结束时的回调
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Feb 2, 2018
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        <script src="/assets/js/DPlayer.min.js"> </script><p>用python写一些api测试, 需要在程序结束前记录时间, 尝试了各种中文的英文的关键词, 终于搜索到atexit这个模块.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> atexit</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">exit_function</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">"exiting"</span>)</div><div class="line">	</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">exit_function2</span><span class="params">(name, age)</span>:</span></div><div class="line">    print(<span class="string">"exiting2: "</span> + name + <span class="string">" "</span> + str(age))</div><div class="line">	</div><div class="line"><span class="meta">@atexit.register</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">exit_function3</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">"exiting3"</span>)</div><div class="line">	</div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    atexit.register(exit_function)</div><div class="line">    atexit.register(exit_function2, <span class="string">'Phoenix'</span>, <span class="number">22</span>)</div></pre></td></tr></table></figure>
+<p>可注册多个回调函数, 也可以传入参数, 也可以使用装饰器来修饰需要回调的函数, 执行顺序是<strong>先进后出</strong>, 代码由上至下, 所以注册顺序是exit_function3, exit_function, exit_function2, 所以执行顺序反过来:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">exiting2: 22Phoenix</div><div class="line">exiting</div><div class="line">exiting3</div></pre></td></tr></table></figure>
+<p><strong>注意</strong>: 如果程序是非正常crash，或通过os._exit()退出，注册的回调函数将不会被调用.</p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+  <div class="post-reward">
+    <input type="checkbox" name="reward" id="reward" hidden />
+    <label class="reward-button" for="reward">赞赏支持</label>
+    <div class="qr-code">
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/wechat.png" title="wechat">
+        </label>
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/alipay.png" title="alipay">
+        </label>
+      
+    </div>
+  </div>
+
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/atexit/">atexit</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/03/01/Objective-C-中的消息发送和转发/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Objective-C 中的消息发送和转发</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/01/12/Python-Fabric-自动化部署/">
+        <span class="next-text nav-default">Python Fabric 自动化部署</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:x.rhythm@qq.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://twitter.com/phoenixnirvana7" class="iconfont icon-twitter" title="twitter"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/Asura19" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/phoenix19" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">John Doe</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <script type="text/html" id="search-result">
+    <article class="post">
+      <header class="post-header">
+        <h1 class="post-title">
+          <a href="$url$" class="post-link">
+            $title$
+          </a>
+        </h1>
+      </header>
+      <div class="post-content">
+        $content$
+        <div class="read-more">
+          <a href="$url$" class="read-more-link">
+            Read more..
+          </a>
+        </div>
+      </div>
+    </article>
+  </script>
+  <script type="text/html" id="no-search-result">
+    <div class="no-result">
+      <h2>No result found!</h2>
+    </div>
+  </script>
+  <script type="text/javascript" src="/js/src/search.js?v=2.4.x"></script>
+
+  </body>
+</html>

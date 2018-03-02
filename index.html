@@ -176,7 +176,7 @@
         
           <script src="/assets/js/DPlayer.min.js"> </script><p>Objective-C 的方法调用被苹果成为”发消息”. objc的消息机制是由运行时实现、非常灵活动态。这篇文章简单记录一下objc运行时对于消息发送和转发的实现. <a href="https://github.com/Asura19/ObjcMessageDemo" target="_blank" rel="external">本文Demo</a></p>
 <h2 id="编译器转换"><a href="#编译器转换" class="headerlink" title="编译器转换"></a>编译器转换</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[cat mew];</div></pre></td></tr></table></figure>
-<p>意为cat对象调用new方法, 也就是向cat对象发送mew消息, 实际上编译器会将这行代码转换为</p>
+<p>意为cat对象调用mew方法, 也就是向cat对象发送mew消息, 实际上编译器会将这行代码转换为</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">objc_msgSend(cat, @selector(mew));</div></pre></td></tr></table></figure>
 <p>验证如下:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">#import &lt;objc/message.h&gt;</div><div class="line"></div><div class="line">@interface Cat : NSObject</div><div class="line">@property (nonatomic, copy) NSString *name;</div><div class="line">- (void)mew;</div><div class="line">@end</div><div class="line"></div><div class="line">@implementation Cat</div><div class="line">- (void)mew &#123;</div><div class="line">    NSLog(@&quot;喵~&quot;);</div><div class="line">&#125;</div><div class="line">@end</div><div class="line"></div><div class="line">int main(int argc, const char * argv[]) &#123;</div><div class="line">    @autoreleasepool &#123;</div><div class="line">       Cat *cat = Cat.new;</div><div class="line">       [cat mew];</div><div class="line">       objc_msgSend(cat, @selector(mew));</div><div class="line">    &#125;</div><div class="line">    return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -204,7 +204,7 @@
 <li>在Cat的cache列表中查找mew</li>
 <li>在Cat的method列表中查找mew</li>
 <li>在父类的cache和method列表中查找mew</li>
-<li>在2-4的过程中, 一旦找到就执行方法</li>
+<li>在2-4的过程中, 一旦找到就将该方法添加到缓存列表并执行该方法</li>
 <li>没有找到任何的方法实现, Try method resolver once, 也就是我们说的resolveInstanceMethod方法</li>
 <li>resolveInstanceMethod没实现, 就进入转发机制</li>
 </ol>
@@ -240,9 +240,50 @@
 <p>该消息转发给Cat类的一个对象, 去调用Cat的setName:方法, 当然这没什么实际的意义.</p>
 <p>第三次补救:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">@implementation Dog &#123;</div><div class="line">    NSString *_name;</div><div class="line">&#125;</div><div class="line">@dynamic name;</div><div class="line"></div><div class="line">- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector &#123;</div><div class="line">    NSLog(@&quot;%s&quot;, __func__);</div><div class="line">    NSString *selStr = NSStringFromSelector(aSelector);</div><div class="line">    if([selStr isEqualToString:@&quot;name&quot;]) &#123;</div><div class="line">        NSMethodSignature *sig = [NSMethodSignature signatureWithObjCTypes:&quot;@@:&quot;];</div><div class="line">        return sig;</div><div class="line">    &#125;</div><div class="line">    else &#123;</div><div class="line">        NSMethodSignature *sig = [NSMethodSignature signatureWithObjCTypes:&quot;v@:@&quot;];</div><div class="line">        return sig;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)forwardInvocation:(NSInvocation *)anInvocation &#123;</div><div class="line">    NSLog(@&quot;%s&quot;, __func__);</div><div class="line">    </div><div class="line">    SEL sel = [anInvocation selector];</div><div class="line">    Cat *cat = [[Cat alloc] init];</div><div class="line">    if([cat respondsToSelector:sel]) &#123;</div><div class="line">        [anInvocation invokeWithTarget:cat];</div><div class="line">    &#125;</div><div class="line">    else &#123;</div><div class="line">        [self doesNotRecognizeSelector:sel];</div><div class="line">    &#125; </div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
-<p>首先生成方法签名, 然后转发调用, 也可以不使用doesNotRecognizeSelector, 这样就吞没了这个消息.</p>
-<p>如果没有实现forward, 那直接调用doesNotRecognizeSelector, 抛出exception.</p>
+<p>首先生成方法签名, 然后转发调用, 如果没有实现forward, 那直接调用doesNotRecognizeSelector, 抛出exception, 也可以不使用doesNotRecognizeSelector, 这样就吞没了这个消息.</p>
 <p>__原创文章, 转载请注明出处</p>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          <a class="post-link" href="/2018/02/02/atexit-Python程序结束时的回调/">atexit - Python程序结束时的回调</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Feb 2, 2018
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <script src="/assets/js/DPlayer.min.js"> </script><p>用python写一些api测试, 需要在程序结束前记录时间, 尝试了各种中文的英文的关键词, 终于搜索到atexit这个模块.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> atexit</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">exit_function</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">"exiting"</span>)</div><div class="line">	</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">exit_function2</span><span class="params">(name, age)</span>:</span></div><div class="line">    print(<span class="string">"exiting2: "</span> + name + <span class="string">" "</span> + str(age))</div><div class="line">	</div><div class="line"><span class="meta">@atexit.register</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">exit_function3</span><span class="params">()</span>:</span></div><div class="line">    print(<span class="string">"exiting3"</span>)</div><div class="line">	</div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    atexit.register(exit_function)</div><div class="line">    atexit.register(exit_function2, <span class="string">'Phoenix'</span>, <span class="number">22</span>)</div></pre></td></tr></table></figure>
+<p>可注册多个回调函数, 也可以传入参数, 也可以使用装饰器来修饰需要回调的函数, 执行顺序是<strong>先进后出</strong>, 代码由上至下, 所以注册顺序是exit_function3, exit_function, exit_function2, 所以执行顺序反过来:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">exiting2: 22Phoenix</div><div class="line">exiting</div><div class="line">exiting3</div></pre></td></tr></table></figure>
+<p><strong>注意</strong>: 如果程序是非正常crash，或通过os._exit()退出，注册的回调函数将不会被调用.</p>
 
         
       
