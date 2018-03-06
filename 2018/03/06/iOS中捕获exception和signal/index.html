@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="skhepgnAG24cr-ctc2IP4LZrldG8Tpq9vdmo7oJeUcA" />
+<meta name="baidu-site-verification" content="X6SobJmsrZ" />
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="iOS中捕获exception和signal"/>
+
+
+
+
+  <meta name="keywords" content="iOS,Objective-C,Exception,Signal,Crash," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Phoenix">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.4.x" />
+
+
+
+<link rel="canonical" href="http://yoursite.com/2018/03/06/iOS中捕获exception和signal/"/>
+
+
+<meta name="description" content="Crash分为两种，一种是程序抛出的异常，没有被捕获造成的；另一种是signal类型的异常。针对未被捕获的异常可以使用NSSetUncaughtExceptionHandler系统方法来设置异常处理函数；对于signal类型的异常，需要使用signal系统方法给每种需要处理的signal类型的异常设置处理函数。本文Demo 核心代码捕获exception1234567891011121314vo">
+<meta name="keywords" content="iOS,Objective-C,Exception,Signal,Crash">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS中捕获exception和signal">
+<meta property="og:url" content="http://yoursite.com/2018/03/06/iOS中捕获exception和signal/index.html">
+<meta property="og:site_name" content="Phoenix">
+<meta property="og:description" content="Crash分为两种，一种是程序抛出的异常，没有被捕获造成的；另一种是signal类型的异常。针对未被捕获的异常可以使用NSSetUncaughtExceptionHandler系统方法来设置异常处理函数；对于signal类型的异常，需要使用signal系统方法给每种需要处理的signal类型的异常设置处理函数。本文Demo 核心代码捕获exception1234567891011121314vo">
+<meta property="og:updated_time" content="2018-03-06T12:39:22.565Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS中捕获exception和signal">
+<meta name="twitter:description" content="Crash分为两种，一种是程序抛出的异常，没有被捕获造成的；另一种是signal类型的异常。针对未被捕获的异常可以使用NSSetUncaughtExceptionHandler系统方法来设置异常处理函数；对于signal类型的异常，需要使用signal系统方法给每种需要处理的signal类型的异常设置处理函数。本文Demo 核心代码捕获exception1234567891011121314vo">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.4.x" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: true,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> iOS中捕获exception和signal · Phoenix </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Phoenix</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Phoenix</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              Home
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              Archives
+            
+          </a>
+        </li>
+      
+      
+        <li class="menu-search">
+          <form>
+            <i class="iconfont icon-search" id="open-search"></i>
+            <input type="text" class="search-input" id="search-input" />
+            <i class="iconfont icon-close" id="close-search"></i>
+          </form>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          iOS中捕获exception和signal
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Mar 6, 2018
+        </span>
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#核心代码"><span class="toc-text">核心代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#捕获exception"><span class="toc-text">捕获exception</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#捕获Signal"><span class="toc-text">捕获Signal</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Signal信号类型"><span class="toc-text">Signal信号类型</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <script src="/assets/js/DPlayer.min.js"> </script><p>Crash分为两种，一种是程序抛出的异常，没有被捕获造成的；另一种是signal类型的异常。针对未被捕获的异常可以使用NSSetUncaughtExceptionHandler系统方法来设置异常处理函数；对于signal类型的异常，需要使用signal系统方法给每种需要处理的signal类型的异常设置处理函数。<a href="https://github.com/Asura19/UncaughtException" target="_blank" rel="external">本文Demo</a></p>
+<h2 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h2><h3 id="捕获exception"><a href="#捕获exception" class="headerlink" title="捕获exception"></a>捕获exception</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">void HandleException(NSException *exception) &#123;</div><div class="line"></div><div class="line">    NSArray *stackArray = [exception callStackSymbols];</div><div class="line">    NSString *reason = [exception reason];</div><div class="line">    NSString *name = [exception name];</div><div class="line">    NSString *exceptionInfo = [NSString stringWithFormat:@&quot;Exception reason：%@\nException name：%@\nException stack：%@&quot;,name, reason, stackArray];</div><div class="line">    </div><div class="line">    NSLog(@&quot;%@&quot;, exceptionInfo);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">void InstallUncaughtExceptionHandler(void) &#123;</div><div class="line">    NSSetUncaughtExceptionHandler(&amp;HandleException);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="捕获Signal"><a href="#捕获Signal" class="headerlink" title="捕获Signal"></a>捕获Signal</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">void SignalExceptionHandler(int signal) &#123;</div><div class="line">    NSMutableString *crashInfo = [[NSMutableString alloc] init];</div><div class="line">    [crashInfo appendString:@&quot;Stack:\n&quot;];</div><div class="line">    void *callstack[128];</div><div class="line">    int i, frames = backtrace(callstack, 128);</div><div class="line">    char **strs = backtrace_symbols(callstack, frames);</div><div class="line">    for (i = 0; i &lt; frames; ++i) &#123;</div><div class="line">        [crashInfo appendFormat:@&quot;%s\n&quot;, strs[i]];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">void InstallSignalHandler(void) &#123;</div><div class="line">    signal(SIGHUP, SignalExceptionHandler);</div><div class="line">    signal(SIGINT, SignalExceptionHandler);</div><div class="line">    signal(SIGQUIT, SignalExceptionHandler);</div><div class="line">    signal(SIGABRT, SignalExceptionHandler);</div><div class="line">    signal(SIGILL, SignalExceptionHandler);</div><div class="line">    signal(SIGSEGV, SignalExceptionHandler);</div><div class="line">    signal(SIGFPE, SignalExceptionHandler);</div><div class="line">    signal(SIGBUS, SignalExceptionHandler);</div><div class="line">    signal(SIGPIPE, SignalExceptionHandler);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Signal信号类型"><a href="#Signal信号类型" class="headerlink" title="Signal信号类型"></a><a href="https://opensource.apple.com/source/xnu/xnu-344/bsd/sys/signal.h" target="_blank" rel="external">Signal信号类型</a></h2><p><strong>define SIGHUP 1 /<em> hangup </em>/</strong><br>SIGHUP是Unix系统管理员很常用的一个信号。许多后台服务进程在接受到该信号后将会重新读取它们的配置文件。然而，该信号的实际功能是通知进程它的控制终端被断开。缺省行为是终止进程。</p>
+<p><strong>define SIGINT 2 /<em> interrupt </em>/</strong><br>对于Unix使用者来说，SIGINT是另外一个常用的信号。许多shell的CTRL-C组合使得这个信号被大家所熟知。该信号的正式名字是中断信号。缺省行为是终止进程。</p>
+<p><strong>define SIGQUIT 3 /<em> quit </em>/</strong><br>SIGQUIT信号被用于接收shell的CTRL-/组合。另外，它还用于告知进程退出。这是一个常用信号，用来通知应用程序从容的（译注:即在结束前执行一些退出动作）关闭。缺省行为是终止进程，并且创建一个核心转储。</p>
+<p><strong>define SIGILL 4 /<em> illegal instr. (not reset when caught) </em>/</strong><br>如果正在执行的进程中包含非法指令，操作系统将向该进程发送SIGILL信号。如果你的程序使用了线程，或者pointer functions，那么可能的话可以尝试捕获该信号来协助调试。（[color=Red]注意：原文这句为：“If your program makes use of use of threads, or pointer functions, try to catch this signal if possible for aid in debugging.”。中间的两个use of use of，不知是原书排版的瑕疵还是我确实没有明白其意义；另外，偶经常听说functions pointer，对于pointer functions，google了一下，应该是fortran里面的东西，不管怎样，还真不知道，确切含义还请知道的兄弟斧正。[/color]）缺省行为是终止进程，并且创建一个核心转储。</p>
+<p><strong>define SIGTRAP 5 /<em> trace trap (not reset when caught) </em>/</strong><br>SIGTRAP这个信号是由POSIX标准定义的，用于调试目的。当被调试进程接收到该信号时，就意味着它到达了某一个调试断点。一旦这个信号被交付，被调试的进程就会停止，并且它的父进程将接到通知。缺省行为是终止进程，并且创建一个核心转储。</p>
+<p><strong>define SIGABRT 6 /<em> abort() </em>/</strong><br>SIGABRT提供了一种在异常终止(abort)一个进程的同时创建一个核心转储的方法。然而如果该信号被捕获，并且信号处理句柄没有返回，那么进程不会终止。缺省行为是终止进程，并且创建一个核心转储。</p>
+<p><strong>define SIGFPE 8 /<em> floating point exception </em>/</strong><br>当进程发生一个浮点错误时，SIGFPE信号被发送给该进程。对于那些处理复杂数学运算的程序，一般会建议你捕获该信号。缺省行为是终止进程，并且创建一个核心转储。</p>
+<p><strong>define SIGKILL 9 /<em> kill (cannot be caught or ignored) </em>/</strong><br>SIGKILL是这些信号中最难对付的一个。正如你在它旁边的注释中看到的那样，这个信号不能被捕获或忽略。一旦该信号被交付给一个进程，那么这个进程就会终止。然而，会有一些极少数情况SIGKILL不会终止进程。这些罕见的情形在处理一个“非中断操作”（比如磁盘I/O）的时候发生。虽然这样的情形极少发生，然而一旦发生的话，会造成进程死锁。唯一结束进程的办法就只有重新启动了。缺省行为是终止进程。</p>
+<p><strong>define SIGBUS 10 /<em> bus error </em>/</strong><br>如同它的名字暗示的那样，CPU检测到数据总线上的错误时将产生SIGBUS信号。当程序尝试去访问一个没有正确对齐的内存地址时就会产生该信号。缺省行为是终止进程，并且创建一个核心转储。</p>
+<p><strong>define SIGSEGV 11 /<em> segmentation violation </em>/</strong><br>SIGSEGV是另一个C/C++程序员很熟悉的信号。当程序没有权利访问一个受保护的内存地址时，或者访问无效的虚拟内存地址（脏指针，dirty pointers，译注：由于没有和后备存储器中内容进行同步而造成。关于野指针，可以参见<a href="http://en.wikipedia.org/wiki/Wild_pointer" target="_blank" rel="external">http://en.wikipedia.org/wiki/Wild_pointer</a> 的解释。）时，会产生这个信号。缺省行为是终止进程，并且创建一个核心转储。</p>
+<p><strong>define SIGSYS 12 /<em> non-existent system call invoked </em>/</strong><br>SIGSYS信号会在进程执行一个不存在的系统调用时被交付。操作系统会交付该信号，并且进程会被终止。缺省行为是终止进程，并且创建一个核心转储。</p>
+<p><strong>define SIGPIPE 13 /<em> write on a pipe with no one to read it </em>/</strong><br>管道的作用就像电话一样，允许进程之间的通信。如果进程尝试对管道执行写操作，然而管道的另一边却没有回应者时，操作系统会将SIGPIPE信号交付给这个讨厌的进程（这里就是那个打算写入的进程）。缺省行为是终止进程。</p>
+<p><strong>define SIGALRM 14 /<em> alarm clock </em>/</strong><br>在进程的计时器到期的时候，SIGALRM信号会被交付（delivered）给进程。这些计时器由本章后面将会提及<br>的setitimer和alarm调用设置。缺省行为是终止进程。</p>
+<p><strong>define SIGTERM 15 /<em> software termination signal from kill </em>/</strong><br>SIGTERM信号被发送给进程，通知该进程是时候终止了，并且在终止之前做一些清理活动。SIGTERM信号是Unix的kill命令发送的缺省信号，同时也是操作系统关闭时向进程发送的缺省信号。缺省行为是终止进程。</p>
+<p><strong>define SIGURG 16 /<em> urgent condition on IO channel </em>/</strong><br>在进程已打开的套接字上发生某些情况时，SIGURG将被发送给该进程。如果进程不捕获这个信号的话，那么将被丢弃。缺省行为是丢弃这个信号。</p>
+<p><strong>define SIGSTOP 17 /<em> sendable stop signal not from tty </em>/</strong><br>本信号不能被捕获或忽略。一旦进程接收到SIGSTOP信号，它会立即停止(stop)，直到接收到另一个SIGCONT<br>信号为止。缺省行为是停止进程，直到接收到一个SIGCONT信号为止。</p>
+<p><strong>define SIGTSTP 18 /<em> stop signal from tty </em>/</strong><br>SIGSTP与SIGSTOP类似，它们的区别在于SIGSTP信号可以被捕获或忽略。当shell从键盘接收到CTRL-Z的时候就会交付（deliver）这个信号给进程。缺省行为是停止进程，直到接收到一个SIGCONT信号为止。</p>
+<p><strong>define SIGCONT 19 /<em> continue a stopped process </em>/</strong><br>SIGCONT也是一个有意思的信号。如前所述，当进程停止的时候，这个信号用来告诉进程恢复运行。该信号的有趣的地方在于：它不能被忽略或阻塞，但可以被捕获。这样做很有意义：因为进程大概不愿意忽略或阻塞SIGCONT信号，否则，如果进程接收到SIGSTOP或SIGSTP的时候该怎么办？缺省行为是丢弃该信号。</p>
+<p><strong>define SIGCHLD 20 /<em> to parent on child stop or exit </em>/</strong><br>SIGCHLD是由Berkeley Unix引入的，并且比SRV 4 Unix上的实现有更好的接口。（如果信号是一个没有追溯能力的过程(not a retroactive process)，那么BSD的SIGCHID信号实现会比较好。在system V Unix的实现中，如果进程要求捕获该信号，操作系统会检查是否存在有任何未完成的子进程（这些子进程是已经退出exit)的子进程，并且在等待调用wait的父进程收集它们的状态）。如果子进程退出的时候附带有一些终止信息(terminating information），那么信号处理句柄就会被调用。所以，仅仅要求捕获这个信号会导致信号处理句柄被调用(译注：即是上面说的“信号的追溯能力”)，而这是却一种相当混乱的状况。）一旦一个进程的子进程状态发生改变，SIGCHLD信号就会被发送给该进程。就像我在前面章节提到的，父进程虽然可以fork出子进程，但没有必要等待子进程退出。一般来说这是不太好的，因为这样的话，一旦进程退出就可能会变成一个僵尸进程。可是如果父进程捕获SIGCHLD信号的话，它就可以使用wait系列调用中的某一个去收集子进程状态，或者判断发生了什么事情。当发送SIGSTOP,SIGSTP或SIGCONF信号给子进程时，SIGCHLD信号也会被发送给父进程。缺省行为是丢弃该信号。</p>
+<p><strong>define SIGTTIN 21 /<em> to readers pgrp upon background tty read </em>/</strong><br>当一个后台进程尝试进行一个读操作时，SIGTTIN信号被发送给该进程。进程将会阻塞直到接收到SIGCONT信号为止。缺省行为是停止进程，直到接收到SIGCONT信号。</p>
+<p><strong>define SIGTTOU 22 /<em> like TTIN if (tp-&gt;t_local&amp;LTOSTOP) </em>/</strong><br>SIGTTOU信号与SIGTTIN很相似，不同之处在于SIGTTOU信号是由于后台进程尝试对一个设置了TOSTOP属性的tty执行写操作时才会产生。然而，如果tty没有设置这个属性，SIGTTOU就不会被发送。缺省行为是停止进程，直到接收到SIGCONT信号。</p>
+<p><strong>define SIGIO 23 /<em> input/output possible signal </em>/</strong><br>如果进程在一个文件描述符上有I/O操作的话，SIGIO信号将被发送给这个进程。进程可以通过fcntl调用来设置。缺省行为是丢弃该信号。</p>
+<p><strong>define SIGXCPU 24 /<em> exceeded CPU time limit </em>/</strong><br>如果一旦进程超出了它可以使用的CPU限制（CPU limit），SIGXCPU信号就被发送给它。这个限制可以使用随后讨论的setrlimit设置。缺省行为是终止进程。</p>
+<p><strong>define SIGXFSZ 25 /<em> exceeded file size limit </em>/</strong><br>如果一旦进程超出了它可以使用的文件大小限制，SIGXFSZ信号就被发送给它。稍后我们会继续讨论这个信号。缺省行为是终止进程。</p>
+<p><strong>define SIGVTALRM 26 /<em> virtual time alarm </em>/</strong><br>如果一旦进程超过了它设定的虚拟计时器计数时，SIGVTALRM信号就被发送给它。缺省行为是终止进程。</p>
+<p><strong>define SIGPROF 27 /<em> profiling time alarm </em>/</strong><br>当设置了计时器时，SIGPROF是另一个将会发送给进程的信号。缺省行为是终止进程。</p>
+<p><strong>define SIGWINCH 28 /<em> window size changes </em>/</strong><br>当进程调整了终端的行或列时（比如增大你的xterm的尺寸），SIGWINCH信号被发送给该进程。缺省行为是丢弃该信号。</p>
+<p><strong>define SIGUSR1 29 /<em> user defined signal 1 </em>/</strong><br><strong>define SIGUSR2 30 /<em> user defined signal 2 </em>/</strong><br>SIGUSR1和SIGUSR2这两个信号被设计为用户指定。它们可以被设定来完成你的任何需要。换句话说，操作系统没有任何行为与这两个信号关联。缺省行为是终止进程。(译注：按原文的意思翻译出来似乎这两句话有点矛盾。)</p>
+
+      
+    </div>
+
+    
+      
+      
+
+
+
+      
+      
+  <div class="post-reward">
+    <input type="checkbox" name="reward" id="reward" hidden />
+    <label class="reward-button" for="reward">赞赏支持</label>
+    <div class="qr-code">
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/wechat.png" title="wechat">
+        </label>
+      
+      
+        <label class="qr-code-image" for="reward">
+          <img class="image" src="/image/reward/alipay.png" title="alipay">
+        </label>
+      
+    </div>
+  </div>
+
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/iOS/">iOS</a>
+            
+              <a href="/tags/Objective-C/">Objective-C</a>
+            
+              <a href="/tags/Exception/">Exception</a>
+            
+              <a href="/tags/Signal/">Signal</a>
+            
+              <a href="/tags/Crash/">Crash</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/03/01/Objective-C-中的消息发送和转发/">
+        <span class="next-text nav-default">Objective-C 中的消息发送和转发</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:x.rhythm@qq.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+        
+          <a href="https://twitter.com/phoenixnirvana7" class="iconfont icon-twitter" title="twitter"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/Asura19" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/phoenix19" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">John Doe</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.4.x"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.4.x"></script>
+
+    
+  <script type="text/html" id="search-result">
+    <article class="post">
+      <header class="post-header">
+        <h1 class="post-title">
+          <a href="$url$" class="post-link">
+            $title$
+          </a>
+        </h1>
+      </header>
+      <div class="post-content">
+        $content$
+        <div class="read-more">
+          <a href="$url$" class="read-more-link">
+            Read more..
+          </a>
+        </div>
+      </div>
+    </article>
+  </script>
+  <script type="text/html" id="no-search-result">
+    <div class="no-result">
+      <h2>No result found!</h2>
+    </div>
+  </script>
+  <script type="text/javascript" src="/js/src/search.js?v=2.4.x"></script>
+
+  </body>
+</html>
