@@ -35,22 +35,22 @@
 <link rel="canonical" href="http://yoursite.com/2017/02/18/GCD死锁/"/>
 
 
-<meta name="description" content="一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了). 原文作者: brighttj(@saitjr) 死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽最大努力，也借鉴了很">
+<meta name="description" content="一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了, 并添加了一个案例). 原文作者: brighttj(@saitjr) 死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽">
 <meta name="keywords" content="iOS,Swift,GCD,多线程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GCD死锁">
 <meta property="og:url" content="http://yoursite.com/2017/02/18/GCD死锁/index.html">
 <meta property="og:site_name" content="Phoenix">
-<meta property="og:description" content="一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了). 原文作者: brighttj(@saitjr) 死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽最大努力，也借鉴了很">
+<meta property="og:description" content="一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了, 并添加了一个案例). 原文作者: brighttj(@saitjr) 死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽">
 <meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-1.jpg">
 <meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-2.jpg">
 <meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-3.jpg">
 <meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-4.jpg">
 <meta property="og:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-5.jpg">
-<meta property="og:updated_time" content="2018-03-14T05:14:20.097Z">
+<meta property="og:updated_time" content="2018-05-09T14:58:23.752Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GCD死锁">
-<meta name="twitter:description" content="一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了). 原文作者: brighttj(@saitjr) 死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽最大努力，也借鉴了很">
+<meta name="twitter:description" content="一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了, 并添加了一个案例). 原文作者: brighttj(@saitjr) 死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽">
 <meta name="twitter:image" content="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-1.jpg">
 
 
@@ -183,14 +183,14 @@
   <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">Contents</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#串行与并行"><span class="toc-text">串行与并行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步与异步"><span class="toc-text">同步与异步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GCD-API"><span class="toc-text">GCD API</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-系统标准提供的两个队列"><span class="toc-text">1.系统标准提供的两个队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-除此之外，还可以自己生成队列"><span class="toc-text">2.除此之外，还可以自己生成队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-接下来是同步与异步线程的创建："><span class="toc-text">3.接下来是同步与异步线程的创建：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#案例与分析"><span class="toc-text">案例与分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#案例一"><span class="toc-text">案例一:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例二："><span class="toc-text">案例二：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例三："><span class="toc-text">案例三：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例四"><span class="toc-text">案例四:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例五："><span class="toc-text">案例五：</span></a></li></ol></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#串行与并行"><span class="toc-text">串行与并行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步与异步"><span class="toc-text">同步与异步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GCD-API"><span class="toc-text">GCD API</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-系统标准提供的两个队列"><span class="toc-text">1.系统标准提供的两个队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-除此之外，还可以自己生成队列"><span class="toc-text">2.除此之外，还可以自己生成队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-接下来是同步与异步线程的创建："><span class="toc-text">3.接下来是同步与异步线程的创建：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#案例与分析"><span class="toc-text">案例与分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#案例一"><span class="toc-text">案例一:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例二："><span class="toc-text">案例二：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例三："><span class="toc-text">案例三：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例四"><span class="toc-text">案例四:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例五："><span class="toc-text">案例五：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#案例六："><span class="toc-text">案例六：</span></a></li></ol></li></ol></li></ol>
     </div>
   </div>
 
 
     <div class="post-content">
       
-        <script src="/assets/js/DPlayer.min.js"> </script><p>一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了). 原文作者: <a href="http://www.brighttj.com/ios/ios-gcd-deadlock.html" target="_blank" rel="external">brighttj(@saitjr)</a></p>
+        <script src="/assets/js/DPlayer.min.js"> </script><p>一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了, 并添加了一个案例). 原文作者: <a href="http://www.brighttj.com/ios/ios-gcd-deadlock.html" target="_blank" rel="external">brighttj(@saitjr)</a></p>
 <p>死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽最大努力，也借鉴了很多其他博客中的例子，来讲解GCD死锁问题。</p>
 <h2 id="串行与并行"><a href="#串行与并行" class="headerlink" title="串行与并行"></a>串行与并行</h2><p>在使用GCD的时候，我们会把需要处理的任务放到Block中，然后将任务追加到相应的队列里面，这个队列，叫做Dispatch Queue。然而，存在于两种Dispatch Queue，一种是要等待上一个执行完，再执行下一个的Serial Dispatch Queue，这叫做串行队列；另一种，则是不需要上一个执行完，就能执行下一个的Concurrent Dispatch Queue，叫做并行队列。这两种，均遵循FIFO原则。</p>
 <p><strong>举一个简单的例子，在三个任务中输出1、2、3，串行队列输出是有序的1、2、3，但是并行队列的先后顺序就不一定了。</strong></p>
@@ -251,6 +251,11 @@
 <p>同步线程中，将任务2加入到了主线程，并且，任务3等待任务2完成以后才能执行。这时的主线程，已经被死循环阻塞了。所以任务2无法执行，当然任务3也无法执行，在死循环后的任务5也不会执行。</p>
 <p>最终，只能得到1和4顺序不定的结果。</p>
 <p><img src="http://oph74zx6j.bkt.clouddn.com/gcd-deadlock-5.jpg" alt="deadlock5"></p>
+<h4 id="案例六："><a href="#案例六：" class="headerlink" title="案例六："></a>案例六：</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">print</span>(<span class="number">0</span>)</div><div class="line"><span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">  <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">      <span class="built_in">print</span>(<span class="string">"sleep 4s..."</span>)</div><div class="line">      sleep(<span class="number">4</span>)</div><div class="line">      <span class="built_in">print</span>(<span class="number">1</span>)</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">print</span>(<span class="number">2</span>)</div><div class="line">  <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">      <span class="built_in">print</span>(<span class="number">3</span>)</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">print</span>(<span class="number">4</span>)</div><div class="line"><span class="built_in">print</span>(<span class="string">"sleep 8s..."</span>)</div><div class="line">sleep(<span class="number">8</span>)</div></pre></td></tr></table></figure>
+<p>结果，控制台输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">0</div><div class="line">4</div><div class="line">sleep 8s...</div><div class="line">2</div><div class="line">sleep 4s...</div><div class="line">1</div><div class="line">3</div></pre></td></tr></table></figure>
+<p>分析：</p>
+<p>首先执行print(0), 然后主队列添加异步任务, 不阻塞, 所以执行print(4), 及sleep(8)阻塞, 然后再刚才的异步任务内, 同样也是先执行print(2), 然后再执行队列中的sleep(4), print(1), print(3).</p>
 
       
     </div>
