@@ -46,8 +46,8 @@
 <meta property="og:image" content="https://ae01.alicdn.com/kf/HTB10W5padzvK1RkSnfoq6zMwVXaO.jpg">
 <meta property="og:image" content="https://ae01.alicdn.com/kf/HTB1EPupacnrK1RjSspkq6yuvXXaW.jpg">
 <meta property="og:image" content="https://ae01.alicdn.com/kf/HTB1V4emanjxK1Rjy0Fnq6yBaFXa1.jpg">
-<meta property="og:image" content="http://a.hiphotos.baidu.com/image/pic/item/4610b912c8fcc3ce4b64c98b9f45d688d53f20e5.jpg">
-<meta property="og:updated_time" content="2018-12-10T14:04:19.277Z">
+<meta property="og:image" content="https://ww1.sinaimg.cn/large/007iUjdily1fy1zz41c0gj30j60d70u9.jpg">
+<meta property="og:updated_time" content="2018-12-11T12:15:32.257Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GCD死锁">
 <meta name="twitter:description" content="一直想写一篇关于GCD死锁问题的文章, 但是后来发现了一篇文章讲得很好, 还是直接转载吧(但是把OC改为Swift 3了, 并添加了一个案例). 原文作者: brighttj(@saitjr) 死锁一直都是在使用多线程时，需要注意的一个问题。以前对同步、异步，串行、并行只有一个模糊的概念，想想也是时候整理一下了。再看看之前的博客，已经很久没有干货了【说得好像之前有干货一样】，所以，这篇博客，我尽">
@@ -250,7 +250,7 @@
 <p>任务4完成后，程序进入死循环，Main Queue阻塞。但是加入到Global Queue的异步线程不受影响，继续执行任务1后面的同步线程。</p>
 <p>同步线程中，将任务2加入到了主线程，并且，任务3等待任务2完成以后才能执行。这时的主线程，已经被死循环阻塞了。所以任务2无法执行，当然任务3也无法执行，在死循环后的任务5也不会执行。</p>
 <p>最终，只能得到1和4顺序不定的结果。</p>
-<p><img src="http://a.hiphotos.baidu.com/image/pic/item/4610b912c8fcc3ce4b64c98b9f45d688d53f20e5.jpg" alt="deadlock5"></p>
+<p><img src="https://ww1.sinaimg.cn/large/007iUjdily1fy1zz41c0gj30j60d70u9.jpg" alt="deadlock5"></p>
 <h4 id="案例六："><a href="#案例六：" class="headerlink" title="案例六："></a>案例六：</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">print</span>(<span class="number">0</span>)</div><div class="line"><span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">  <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">      <span class="built_in">print</span>(<span class="string">"sleep 4s..."</span>)</div><div class="line">      sleep(<span class="number">4</span>)</div><div class="line">      <span class="built_in">print</span>(<span class="number">1</span>)</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">print</span>(<span class="number">2</span>)</div><div class="line">  <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">      <span class="built_in">print</span>(<span class="number">3</span>)</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">print</span>(<span class="number">4</span>)</div><div class="line"><span class="built_in">print</span>(<span class="string">"sleep 8s..."</span>)</div><div class="line">sleep(<span class="number">8</span>)</div></pre></td></tr></table></figure>
 <p>结果，控制台输出：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">0</div><div class="line">4</div><div class="line">sleep 8s...</div><div class="line">2</div><div class="line">sleep 4s...</div><div class="line">1</div><div class="line">3</div></pre></td></tr></table></figure>
@@ -399,7 +399,7 @@
      
       2015 - 
     
-    2018
+    2019
 
     <span class="heart">
       <i class="iconfont icon-heart"></i>

@@ -154,6 +154,101 @@
     <header class="post-header">
       <h1 class="post-title">
         
+          <a class="post-link" href="/2019/04/23/Basic-Linux-Commands/">Basic Linux Commands</a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          Apr 23, 2019
+        </span>
+      </div>
+    </header>
+
+    
+    
+
+    <div class="post-content">
+      
+        
+        
+
+        
+          <script src="/assets/js/DPlayer.min.js"> </script><p>作为非科班出身的技术人员, 关于Linux命令也应该掌握些基本的, 所以整理一下.</p>
+<h2 id="Files-amp-Navigating"><a href="#Files-amp-Navigating" class="headerlink" title="Files &amp; Navigating"></a>Files &amp; Navigating</h2><p><code>ls</code> - list all files/folders on current directory (列出当前目录下所有文件和文件夹)</p>
+<p><code>ls -l</code> - formatted listing in line (详细列出所有文件及信息, 每个文件或文件夹占一行)</p>
+<p><code>ls -la</code> - formatted listing including hidden files (详细列出所有文件包括隐藏文件及信息, 每个文件或文件夹占一行)</p>
+<p><code>cd dir</code> - change directory to dir (改变当前目录到dir文件夹)</p>
+<p><code>cd ..</code> - change to parent directory (改变当前目录到父级目录)</p>
+<p><code>cd ../dir</code> - change to dir in parent directory (改变当前目录到父级目录下的dir文件夹)</p>
+<p><code>cd</code> or <code>cd ~</code> - change to home directory (回到home目录下)</p>
+<p><code>cd -</code> - change directory to last directory (返回进入之前所在的目录)</p>
+<p><code>pwd</code> - show current directory (显示当前目录路径)</p>
+<p><code>mkdir dir</code> - create a directory named dir (创建一个名为dir的文件夹)</p>
+<p><code>rm file</code> - remove file (删除文件)</p>
+<p><code>rm -f file</code> - force remove file (强制删除文件)</p>
+<p><code>rm -r dir</code> - remove directory dir (删除文件夹)</p>
+<p><code>rm -rf dir</code> - force remove directory dir (强制删除文件夹)</p>
+<p><code>rm -r *</code> - delete all files and directories except hidden files under the current directory(删除当前目录下除隐含文件外的所有文件和子目录)</p>
+<p><code>rm -rf /</code> - <strong>launch some nuclear bombs targeting your system (删除系统….千万别这么做)</strong></p>
+<p><code>cp file1 file2</code> - copy file1 to file2 (将file1复制为file2)</p>
+<p><code>mv file1 file2</code> - rename file1 to file2 (将file1重命名为file2)</p>
+<p><code>mv file1 dir/file2</code> - move file1 to dir as file2 (将file1移动到dir并重命名为file2)</p>
+<p><code>touch file</code> - create file or update file (创建文件, 或如果文件存在的话更新文件, 如时间戳等, 但不会清空文件已存在的内容)</p>
+<p><code>cat file</code> - output contents of file (输出文件内容)</p>
+<p><code>cat &gt; file</code> - write standard input into file (写入文件内容, 覆盖原有)</p>
+<p><code>cat file1 file2 &gt; file</code> - combine file1 and file2 into file (将文件file1和file2合并后放入文件file中)</p>
+<p><code>cat &gt;&gt; file</code> - append standard input into file (在文件后追加内容)</p>
+<p><code>tail -f file</code> - output contents of file as it grows (当文件内容增加时会打印出来, 一般用于日志监控)</p>
+<h2 id="Networking"><a href="#Networking" class="headerlink" title="Networking"></a>Networking</h2><p><code>ping host</code> - ping host (测试主机之间网络的连通性)</p>
+<p><code>whois domain</code> - get whois for domain (查询域名信息)</p>
+<p><code>dig domain</code> - get DNS for domain (查询DNS信息)</p>
+<p><code>dig -x host</code> - reverse lookup host (执行逆向域名查询)</p>
+<p><code>wget file</code> - download file (下载文件)</p>
+<p><code>wget -c file</code> - continue stopped download (断点续传)</p>
+<p><code>wget -r url</code> - recurively download files from url (递归下载 慎用)</p>
+<p><code>curl url</code> - outputs the webpage from url (输出页面内容)</p>
+<p><code>curl -o meh.html url</code> - writes the page to meh.html (web页面写入本地文件)</p>
+<p><code>ssh user@host</code> - connect to host as user (ssh连接user到host)</p>
+<p><code>ssh -p port user@host</code> - connect using port (ssh指定端口连接)</p>
+<h2 id="Processes"><a href="#Processes" class="headerlink" title="Processes"></a>Processes</h2><p><code>ps</code> - display currently active processes (报告当前系统的进程状态)</p>
+<p><code>ps aux</code> - detailed outputs (显示所有进程详细信息)</p>
+<p><code>kill pid</code> - kill process with process id (pid) (以pid杀掉进程) </p>
+<p><code>killall proc</code> - kill all processes named proc (杀掉所有名为proc的进程)</p>
+<h2 id="System-Info"><a href="#System-Info" class="headerlink" title="System Info"></a>System Info</h2><p><code>date</code> - show current date/time (显示当前系统日期时间)</p>
+<p><code>uptime</code> - show uptime (显示uptime)</p>
+<p><code>whoami</code> - who you are logged in as (显示当前登录用户)</p>
+<p><code>w</code> - display who is online  (显示当前在线用户)</p>
+<p><code>du</code> - show directory space usage (显示当前目录下空间使用)</p>
+<p><code>df</code> - show disk usage (显示磁盘空间使用)</p>
+<p><code>uname -a</code> - show kernal config (显示内核信息)</p>
+<p><code>top</code> - show processes in a dynamic real-time view (实时显示系统各进程资源使用情况)</p>
+<h2 id="Compressing"><a href="#Compressing" class="headerlink" title="Compressing"></a>Compressing</h2><p><code>tar cf file.tar file1 file2</code> - tar files into file.tar (合并file1, file2为file.tar) </p>
+<p><code>tar xf file.tar</code> - untar into current directory (拆解file.tar到当前目录)</p>
+<p><code>tar tf file.tar</code> - show contents of archive (显示tar文件内容)</p>
+<h3 id="options"><a href="#options" class="headerlink" title="options:"></a>options:</h3><p><code>c</code> - create archive (建立新的备份文件)<br><code>t</code> - table of contents (列出备份文件的内容)<br><code>x</code> - extract (从备份文件中还原文件)<br><code>z</code> - use zip/gzip (使用gzip指令备份)<br><code>f</code> - specify filename (指定备份文件名)<br><code>j</code> - bzip2 compression (支持bzip2解压文件)<br><code>w</code> - ask for comfirmation (确认压缩文件的正确性)<br><code>k</code> - do not overwrite (保留原有文件不覆盖)<br><code>v</code> - verbose (显示操作过程)</p>
+<h2 id="Permission"><a href="#Permission" class="headerlink" title="Permission"></a>Permission</h2><p><code>chmod 777 file</code> - change permissions of file (修改文件权限)</p>
+<p><code>4</code> - read (r)<br><code>2</code> - write (w)<br><code>1</code> - execute (x)</p>
+<p>order owner/group/world</p>
+<p><code>chmod 777</code> - rwx for everyone (所有人可读可写可执行)</p>
+<p><code>chmod 755</code> - rw for owner， rx for group and world (文件所有者可读可写可执行, 其他人可读可执行)</p>
+
+        
+      
+    </div>
+
+    
+
+    
+
+  </article>
+
+    
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
           <a class="post-link" href="/2018/03/08/Parsing-JSON-in-Swift-4-with-Decodable/">Parsing JSON in Swift 4 with Decodable</a>
         
       </h1>
@@ -742,76 +837,12 @@
 <p>任务4完成后，程序进入死循环，Main Queue阻塞。但是加入到Global Queue的异步线程不受影响，继续执行任务1后面的同步线程。</p>
 <p>同步线程中，将任务2加入到了主线程，并且，任务3等待任务2完成以后才能执行。这时的主线程，已经被死循环阻塞了。所以任务2无法执行，当然任务3也无法执行，在死循环后的任务5也不会执行。</p>
 <p>最终，只能得到1和4顺序不定的结果。</p>
-<p><img src="http://a.hiphotos.baidu.com/image/pic/item/4610b912c8fcc3ce4b64c98b9f45d688d53f20e5.jpg" alt="deadlock5"></p>
+<p><img src="https://ww1.sinaimg.cn/large/007iUjdily1fy1zz41c0gj30j60d70u9.jpg" alt="deadlock5"></p>
 <h4 id="案例六："><a href="#案例六：" class="headerlink" title="案例六："></a>案例六：</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">print</span>(<span class="number">0</span>)</div><div class="line"><span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">  <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">      <span class="built_in">print</span>(<span class="string">"sleep 4s..."</span>)</div><div class="line">      sleep(<span class="number">4</span>)</div><div class="line">      <span class="built_in">print</span>(<span class="number">1</span>)</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">print</span>(<span class="number">2</span>)</div><div class="line">  <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">      <span class="built_in">print</span>(<span class="number">3</span>)</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">print</span>(<span class="number">4</span>)</div><div class="line"><span class="built_in">print</span>(<span class="string">"sleep 8s..."</span>)</div><div class="line">sleep(<span class="number">8</span>)</div></pre></td></tr></table></figure>
 <p>结果，控制台输出：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">0</div><div class="line">4</div><div class="line">sleep 8s...</div><div class="line">2</div><div class="line">sleep 4s...</div><div class="line">1</div><div class="line">3</div></pre></td></tr></table></figure>
 <p>分析：</p>
 <p>首先执行print(0), 然后主队列添加异步任务, 不阻塞, 所以执行print(4), 及sleep(8)阻塞, 然后再刚才的异步任务内, 同样也是先执行print(2), 然后再执行队列中的sleep(4), print(1), print(3).</p>
-
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2017/01/22/iOS-3D-touch/">iOS 3D touch</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          Jan 22, 2017
-        </span>
-      </div>
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-
-        
-          <script src="/assets/js/DPlayer.min.js"> </script><p>简单介绍一下iOS中的3Dtouch. 一般开发中主要有三种情境使用:<br>icon的3Dtouch<br>应用内的预览<br>再就是可能游戏中会用到的按压力度的检测了</p>
-<h2 id="icon的3D-touch"><a href="#icon的3D-touch" class="headerlink" title="icon的3D touch"></a>icon的3D touch</h2><h3 id="第一种方式-在info-plist中添加"><a href="#第一种方式-在info-plist中添加" class="headerlink" title="第一种方式: 在info.plist中添加"></a>第一种方式: 在info.plist中添加</h3><p><img src="http://oph74zx6j.bkt.clouddn.com/3Dtouch_infoplist.png" alt="3Dtouch with info.plist"></p>
-<p>效果如下</p>
-<p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/3Dtoucheffect.jpg" width="50%" height="50%"></p>
-
-<p>解释一下其中的一些key的意思:<br><code>UIApplicationShortcutItemIconType</code> 是使用系统提供的图标, 目前提供了近30种图标<br><code>UIApplicationShortcutItemIconFile</code> 是 .xcassets 文件中自定义的图标<br><code>UIApplicationShortcutItemType</code> 是应用通过3Dtouch启动时传给应用内部的表示, 让内部代码知道点击的是哪个item.<br>其他的key显而易见, 不做解释.</p>
-<p>那么接下来就是在代码中处理3Dtouch事件了:<br>1.首先应用第一次启动:</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> launchedShortcutItem: <span class="type">UIApplicationShortcutItem</span>?</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">application</span><span class="params">(<span class="number">_</span> application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?)</span></span> -&gt; <span class="type">Bool</span> &#123;</div><div class="line">    <span class="keyword">if</span> <span class="keyword">let</span> shortcutItem = launchOptions?[<span class="type">UIApplicationLaunchOptionsKey</span>.shortcutItem] &#123;</div><div class="line">            launchedShortcutItem = shortcutItem <span class="keyword">as</span>? <span class="type">UIApplicationShortcutItem</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>2.应用已经启动, 并从后台3Dtouch启动:</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">application</span><span class="params">(<span class="number">_</span> application: UIApplication, </span></span></div><div class="line">                   performActionFor shortcutItem: UIApplicationShortcutItem, </div><div class="line">                   completionHandler: @escaping <span class="params">(Bool)</span> -&gt; <span class="type">Void</span>) &#123;</div><div class="line">                   </div><div class="line">    <span class="keyword">let</span> handleAction = handleShortcutItem(shortcutItem)</div><div class="line">    completionHandler(handleAction)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>通过以上两种方式都获取了shortcutItem的信息, 就可以进行相应的逻辑处理了.</p>
-<h3 id="用代码动态添加shortcutItem"><a href="#用代码动态添加shortcutItem" class="headerlink" title="用代码动态添加shortcutItem"></a>用代码动态添加shortcutItem</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> item = <span class="type">UIApplicationShortcutItem</span>(type: <span class="string">"two"</span>,</div><div class="line">                                     localizedTitle: <span class="string">"Phoenix"</span>,</div><div class="line">                                     localizedSubtitle: <span class="string">"Make a Call"</span>,</div><div class="line">                                     icon: <span class="type">UIApplicationShortcutIcon</span>(type: .cloud),</div><div class="line">                                     userInfo: <span class="literal">nil</span>)</div><div class="line">        </div><div class="line"><span class="type">UIApplication</span>.shared.shortcutItems = [item]</div></pre></td></tr></table></figure>
-<p>注意: 通过info.plist 和 代码添加的shortcutItem 并不冲突, 取并集, 但系统限制最多能够显示4个item, 因此会自动按顺序截取前4个.</p>
-<h2 id="应用内预览"><a href="#应用内预览" class="headerlink" title="应用内预览"></a>应用内预览</h2><p>先看一下效果图</p>
-<p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/3dtouchpeekpop.gif" width="50%" height="50%"></p>
-
-<h3 id="peek-amp-pop"><a href="#peek-amp-pop" class="headerlink" title="peek &amp; pop"></a>peek &amp; pop</h3><p>peek是由一个能响应事件的view触发的, 需要在viewDidLoad中注册代理和来源视图:</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">    <span class="keyword">super</span>.viewDidLoad()</div><div class="line">    <span class="keyword">self</span>.registerForPreviewing(with: <span class="keyword">self</span> <span class="keyword">as</span> <span class="type">UIViewControllerPreviewingDelegate</span>, sourceView: <span class="keyword">self</span>.view)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>然后是遵守协议和实现协议方法:</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">previewingContext</span><span class="params">(<span class="number">_</span> previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint)</span></span> -&gt; <span class="type">UIViewController</span>? &#123;</div><div class="line">    <span class="comment">// 返回目标控制器</span></div><div class="line">    <span class="keyword">let</span> indexPath = <span class="keyword">self</span>.tableView.indexPathForRow(at: location)</div><div class="line">    <span class="keyword">let</span> storyboard = <span class="type">UIStoryboard</span>(name: <span class="string">"Main"</span>, bundle: <span class="literal">nil</span>)</div><div class="line">    <span class="keyword">let</span> content = storyboard.instantiateViewController(withIdentifier: <span class="string">"ContentViewController"</span>) <span class="keyword">as</span>! <span class="type">ContentViewController</span></div><div class="line">    <span class="keyword">guard</span> indexPath != <span class="literal">nil</span> <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">nil</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> content</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">previewingContext</span><span class="params">(<span class="number">_</span> previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)</span></span> &#123;</div><div class="line">    <span class="keyword">self</span>.showDetailViewController(viewControllerToCommit, sender: <span class="keyword">self</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="peek-quick-actions"><a href="#peek-quick-actions" class="headerlink" title="peek quick actions"></a>peek quick actions</h3><p>在目标控制器实现以下方法:</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="keyword">var</span> previewActionItems: [<span class="type">UIPreviewActionItem</span>] &#123;</div><div class="line">    <span class="keyword">let</span> action = <span class="type">UIPreviewAction</span>(title: <span class="string">"Save"</span>, style: .<span class="keyword">default</span>) &#123; (action: <span class="type">UIPreviewAction</span>, controller: <span class="type">UIViewController</span>) <span class="keyword">in</span></div><div class="line">        <span class="built_in">print</span>(<span class="string">"Save image"</span>)</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> [action]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="按压力度监听"><a href="#按压力度监听" class="headerlink" title="按压力度监听"></a>按压力度监听</h2><p>实现了一个小demo</p>
-<p></p><p style="text-align:center;"><img src="http://oph74zx6j.bkt.clouddn.com/3dtouchweigh.gif" width="50%" height="50%"></p><br>代码如下:<p></p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">touchesBegan</span><span class="params">(<span class="number">_</span> touches: Set&lt;UITouch&gt;, with event: UIEvent?)</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> touch = touches.first</div><div class="line">    <span class="keyword">self</span>.centerPoint = touch?.location(<span class="keyword">in</span>: touch?.view)</div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">touchesMoved</span><span class="params">(<span class="number">_</span> touches: Set&lt;UITouch&gt;, with event: UIEvent?)</span></span> &#123;</div><div class="line">    <span class="keyword">let</span> touch = touches.first</div><div class="line">    <span class="keyword">let</span> force = touch?.force</div><div class="line">    <span class="keyword">let</span> maximumPossibleForce = touch?.maximumPossibleForce</div><div class="line">    <span class="keyword">let</span> quotient = force! / maximumPossibleForce!</div><div class="line">    <span class="keyword">let</span> border = <span class="keyword">self</span>.view.frame.size.width</div><div class="line">    <span class="keyword">self</span>.round.layer.cornerRadius = border * <span class="number">0.5</span> * quotient</div><div class="line">    <span class="keyword">self</span>.round.frame = <span class="type">CGRect</span>(x: <span class="number">0</span>, y: <span class="number">0</span>, width: border * quotient, height: border * quotient)</div><div class="line">    <span class="keyword">let</span> point = touch?.location(<span class="keyword">in</span>: touch?.view)</div><div class="line">    <span class="keyword">self</span>.round.center = point!</div><div class="line">        </div><div class="line">    <span class="keyword">let</span> weight = <span class="number">415</span> * quotient</div><div class="line">    <span class="keyword">self</span>.weightLabel.text = <span class="string">"<span class="subst">\(weight)</span> g"</span></div><div class="line">&#125;</div><div class="line">    </div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">touchesEnded</span><span class="params">(<span class="number">_</span> touches: Set&lt;UITouch&gt;, with event: UIEvent?)</span></span> &#123;</div><div class="line">    <span class="keyword">self</span>.round.frame = <span class="type">CGRect</span>.zero</div><div class="line">    <span class="keyword">self</span>.weightLabel.text = <span class="string">"0 g"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><a href="https://github.com/Asura19/My30DaysOfSwift/tree/master/3DTouch" target="_blank" rel="external">本文完整demo</a> (3Dtouch不支持模拟器, 请以真机调试)</p>
-<p>__原创文章, 转载请注明出处</p>
 
         
       
@@ -905,7 +936,7 @@
      
       2015 - 
     
-    2018
+    2019
 
     <span class="heart">
       <i class="iconfont icon-heart"></i>

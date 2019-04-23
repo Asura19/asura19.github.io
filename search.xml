@@ -3,6 +3,80 @@
   
     
     <entry>
+      <title><![CDATA[Basic Linux Commands]]></title>
+      <url>/2019/04/23/Basic-Linux-Commands/</url>
+      <content type="html"><![CDATA[<script src="/assets/js/DPlayer.min.js"> </script><p>作为非科班出身的技术人员, 关于Linux命令也应该掌握些基本的, 所以整理一下.</p>
+<h2 id="Files-amp-Navigating"><a href="#Files-amp-Navigating" class="headerlink" title="Files &amp; Navigating"></a>Files &amp; Navigating</h2><p><code>ls</code> - list all files/folders on current directory (列出当前目录下所有文件和文件夹)</p>
+<p><code>ls -l</code> - formatted listing in line (详细列出所有文件及信息, 每个文件或文件夹占一行)</p>
+<p><code>ls -la</code> - formatted listing including hidden files (详细列出所有文件包括隐藏文件及信息, 每个文件或文件夹占一行)</p>
+<p><code>cd dir</code> - change directory to dir (改变当前目录到dir文件夹)</p>
+<p><code>cd ..</code> - change to parent directory (改变当前目录到父级目录)</p>
+<p><code>cd ../dir</code> - change to dir in parent directory (改变当前目录到父级目录下的dir文件夹)</p>
+<p><code>cd</code> or <code>cd ~</code> - change to home directory (回到home目录下)</p>
+<p><code>cd -</code> - change directory to last directory (返回进入之前所在的目录)</p>
+<p><code>pwd</code> - show current directory (显示当前目录路径)</p>
+<p><code>mkdir dir</code> - create a directory named dir (创建一个名为dir的文件夹)</p>
+<p><code>rm file</code> - remove file (删除文件)</p>
+<p><code>rm -f file</code> - force remove file (强制删除文件)</p>
+<p><code>rm -r dir</code> - remove directory dir (删除文件夹)</p>
+<p><code>rm -rf dir</code> - force remove directory dir (强制删除文件夹)</p>
+<p><code>rm -r *</code> - delete all files and directories except hidden files under the current directory(删除当前目录下除隐含文件外的所有文件和子目录)</p>
+<p><code>rm -rf /</code> - <strong>launch some nuclear bombs targeting your system (删除系统….千万别这么做)</strong></p>
+<p><code>cp file1 file2</code> - copy file1 to file2 (将file1复制为file2)</p>
+<p><code>mv file1 file2</code> - rename file1 to file2 (将file1重命名为file2)</p>
+<p><code>mv file1 dir/file2</code> - move file1 to dir as file2 (将file1移动到dir并重命名为file2)</p>
+<p><code>touch file</code> - create file or update file (创建文件, 或如果文件存在的话更新文件, 如时间戳等, 但不会清空文件已存在的内容)</p>
+<p><code>cat file</code> - output contents of file (输出文件内容)</p>
+<p><code>cat &gt; file</code> - write standard input into file (写入文件内容, 覆盖原有)</p>
+<p><code>cat file1 file2 &gt; file</code> - combine file1 and file2 into file (将文件file1和file2合并后放入文件file中)</p>
+<p><code>cat &gt;&gt; file</code> - append standard input into file (在文件后追加内容)</p>
+<p><code>tail -f file</code> - output contents of file as it grows (当文件内容增加时会打印出来, 一般用于日志监控)</p>
+<h2 id="Networking"><a href="#Networking" class="headerlink" title="Networking"></a>Networking</h2><p><code>ping host</code> - ping host (测试主机之间网络的连通性)</p>
+<p><code>whois domain</code> - get whois for domain (查询域名信息)</p>
+<p><code>dig domain</code> - get DNS for domain (查询DNS信息)</p>
+<p><code>dig -x host</code> - reverse lookup host (执行逆向域名查询)</p>
+<p><code>wget file</code> - download file (下载文件)</p>
+<p><code>wget -c file</code> - continue stopped download (断点续传)</p>
+<p><code>wget -r url</code> - recurively download files from url (递归下载 慎用)</p>
+<p><code>curl url</code> - outputs the webpage from url (输出页面内容)</p>
+<p><code>curl -o meh.html url</code> - writes the page to meh.html (web页面写入本地文件)</p>
+<p><code>ssh user@host</code> - connect to host as user (ssh连接user到host)</p>
+<p><code>ssh -p port user@host</code> - connect using port (ssh指定端口连接)</p>
+<h2 id="Processes"><a href="#Processes" class="headerlink" title="Processes"></a>Processes</h2><p><code>ps</code> - display currently active processes (报告当前系统的进程状态)</p>
+<p><code>ps aux</code> - detailed outputs (显示所有进程详细信息)</p>
+<p><code>kill pid</code> - kill process with process id (pid) (以pid杀掉进程) </p>
+<p><code>killall proc</code> - kill all processes named proc (杀掉所有名为proc的进程)</p>
+<h2 id="System-Info"><a href="#System-Info" class="headerlink" title="System Info"></a>System Info</h2><p><code>date</code> - show current date/time (显示当前系统日期时间)</p>
+<p><code>uptime</code> - show uptime (显示uptime)</p>
+<p><code>whoami</code> - who you are logged in as (显示当前登录用户)</p>
+<p><code>w</code> - display who is online  (显示当前在线用户)</p>
+<p><code>du</code> - show directory space usage (显示当前目录下空间使用)</p>
+<p><code>df</code> - show disk usage (显示磁盘空间使用)</p>
+<p><code>uname -a</code> - show kernal config (显示内核信息)</p>
+<p><code>top</code> - show processes in a dynamic real-time view (实时显示系统各进程资源使用情况)</p>
+<h2 id="Compressing"><a href="#Compressing" class="headerlink" title="Compressing"></a>Compressing</h2><p><code>tar cf file.tar file1 file2</code> - tar files into file.tar (合并file1, file2为file.tar) </p>
+<p><code>tar xf file.tar</code> - untar into current directory (拆解file.tar到当前目录)</p>
+<p><code>tar tf file.tar</code> - show contents of archive (显示tar文件内容)</p>
+<h3 id="options"><a href="#options" class="headerlink" title="options:"></a>options:</h3><p><code>c</code> - create archive (建立新的备份文件)<br><code>t</code> - table of contents (列出备份文件的内容)<br><code>x</code> - extract (从备份文件中还原文件)<br><code>z</code> - use zip/gzip (使用gzip指令备份)<br><code>f</code> - specify filename (指定备份文件名)<br><code>j</code> - bzip2 compression (支持bzip2解压文件)<br><code>w</code> - ask for comfirmation (确认压缩文件的正确性)<br><code>k</code> - do not overwrite (保留原有文件不覆盖)<br><code>v</code> - verbose (显示操作过程)</p>
+<h2 id="Permission"><a href="#Permission" class="headerlink" title="Permission"></a>Permission</h2><p><code>chmod 777 file</code> - change permissions of file (修改文件权限)</p>
+<p><code>4</code> - read (r)<br><code>2</code> - write (w)<br><code>1</code> - execute (x)</p>
+<p>order owner/group/world</p>
+<p><code>chmod 777</code> - rwx for everyone (所有人可读可写可执行)</p>
+<p><code>chmod 755</code> - rw for owner， rx for group and world (文件所有者可读可写可执行, 其他人可读可执行)</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> Command </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[Parsing JSON in Swift 4 with Decodable]]></title>
       <url>/2018/03/08/Parsing-JSON-in-Swift-4-with-Decodable/</url>
       <content type="html"><![CDATA[<script src="/assets/js/DPlayer.min.js"> </script><p>Trying to write a post in English. 👻</p>
@@ -413,7 +487,7 @@
 <p>任务4完成后，程序进入死循环，Main Queue阻塞。但是加入到Global Queue的异步线程不受影响，继续执行任务1后面的同步线程。</p>
 <p>同步线程中，将任务2加入到了主线程，并且，任务3等待任务2完成以后才能执行。这时的主线程，已经被死循环阻塞了。所以任务2无法执行，当然任务3也无法执行，在死循环后的任务5也不会执行。</p>
 <p>最终，只能得到1和4顺序不定的结果。</p>
-<p><img src="http://a.hiphotos.baidu.com/image/pic/item/4610b912c8fcc3ce4b64c98b9f45d688d53f20e5.jpg" alt="deadlock5"></p>
+<p><img src="https://ww1.sinaimg.cn/large/007iUjdily1fy1zz41c0gj30j60d70u9.jpg" alt="deadlock5"></p>
 <h4 id="案例六："><a href="#案例六：" class="headerlink" title="案例六："></a>案例六：</h4><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">print</span>(<span class="number">0</span>)</div><div class="line"><span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">  <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">      <span class="built_in">print</span>(<span class="string">"sleep 4s..."</span>)</div><div class="line">      sleep(<span class="number">4</span>)</div><div class="line">      <span class="built_in">print</span>(<span class="number">1</span>)</div><div class="line">  &#125;</div><div class="line">  <span class="built_in">print</span>(<span class="number">2</span>)</div><div class="line">  <span class="type">DispatchQueue</span>.main.async &#123;</div><div class="line">      <span class="built_in">print</span>(<span class="number">3</span>)</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="built_in">print</span>(<span class="number">4</span>)</div><div class="line"><span class="built_in">print</span>(<span class="string">"sleep 8s..."</span>)</div><div class="line">sleep(<span class="number">8</span>)</div></pre></td></tr></table></figure>
 <p>结果，控制台输出：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">0</div><div class="line">4</div><div class="line">sleep 8s...</div><div class="line">2</div><div class="line">sleep 4s...</div><div class="line">1</div><div class="line">3</div></pre></td></tr></table></figure>
